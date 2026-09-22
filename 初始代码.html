@@ -76,14 +76,20 @@ body{
 .star{position:absolute;border-radius:50%;background:#fff;animation:tw 3s ease-in-out infinite}
 @keyframes tw{0%,100%{opacity:.22;transform:scale(.7)}50%{opacity:1;transform:scale(1)}}
 .star.big{box-shadow:0 0 9px 2px rgba(255,255,255,.45)}
-.meteor{position:absolute;width:130px;height:1.5px;opacity:0;
-  background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.95));
-  animation:met 9s linear infinite}
+.meteor{position:absolute;width:170px;height:2px;opacity:0;border-radius:2px;
+  background:linear-gradient(to left,rgba(255,255,255,0) 0%,rgba(255,255,255,.18) 34%,
+    rgba(255,255,255,.62) 68%,rgba(255,255,255,.96) 92%,#FFFFFF 100%);
+  animation:met 8s linear infinite}
+.meteor::after{
+  content:"";position:absolute;left:-2px;top:-2.5px;width:7px;height:7px;border-radius:50%;
+  background:#fff;box-shadow:0 0 10px 3px rgba(255,255,255,.85),0 0 22px 8px rgba(160,200,255,.35);
+}
 @keyframes met{
-  0%{opacity:0;transform:translate3d(80px,-60px,0) rotate(26deg) scaleX(.25)}
-  6%{opacity:1}
-  16%{opacity:0;transform:translate3d(-150px,110px,0) rotate(26deg) scaleX(1)}
-  100%{opacity:0;transform:translate3d(-150px,110px,0) rotate(26deg) scaleX(1)}
+  0%   {opacity:0;transform:translate3d(70px,-24px,0) rotate(-19deg) scaleX(.22)}
+  7%   {opacity:1}
+  24%  {opacity:1}
+  32%  {opacity:.9;transform:translate3d(-390px,136px,0) rotate(-19deg) scaleX(1)}
+  40%,100%{opacity:0;transform:translate3d(-430px,150px,0) rotate(-19deg) scaleX(1)}
 }
 .note{position:absolute;opacity:0;animation:rise 19s linear infinite}
 .note svg{display:block}
@@ -236,30 +242,31 @@ h1.title{
 .rep-head .r{text-align:right;font-size:9.5px;letter-spacing:.14em;color:var(--dim2)}
 .rep-head .r b{display:block;font-size:12px;color:var(--accent);margin-top:4px;letter-spacing:.1em}
 
-/* 角色卡 */
-.char-card{
-  position:relative;border-radius:22px;overflow:hidden;margin-bottom:20px;
-  border:1px solid rgba(255,255,255,.16);
-  background:linear-gradient(165deg,#2E3E70,#22305A 58%,#1C2750);
+/* ============ 结尾：声音化身（圆形卡通头像） ============ */
+.ava-card{
+  position:relative;margin:24px 0 6px;padding:20px 18px 20px;border-radius:22px;overflow:hidden;
+  text-align:center;border:1px solid rgba(255,255,255,.18);
+  background:linear-gradient(165deg,#31427A,#22305A 58%,#1C2750);
   box-shadow:0 18px 44px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.09);
 }
-.char-card::before{
+.ava-card::before{
   content:"";position:absolute;inset:0;pointer-events:none;
-  background:radial-gradient(78% 58% at 50% 6%,var(--glow,#F5D34A66) 0%,rgba(0,0,0,0) 72%);
-  opacity:.7;
+  background:radial-gradient(72% 54% at 50% 20%,var(--glow,#F5D34A66) 0%,rgba(0,0,0,0) 72%);opacity:.75;
 }
-.avatar{position:relative;display:flex;align-items:center;justify-content:center;padding:14px 0 4px;min-height:236px}
-.avatar svg{width:100%;max-width:258px;height:auto;display:block;filter:drop-shadow(0 12px 24px rgba(0,0,0,.42))}
-.avatar .bob{animation:float 5s ease-in-out infinite}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
-.orbit{animation:spin 22s linear infinite;transform-origin:130px 142px;transform-box:view-box}
-.orbit-r{animation:spinR 17s linear infinite;transform-origin:130px 142px;transform-box:view-box}
-@keyframes spinR{to{transform:rotate(-360deg)}}
-.role-line{position:relative;text-align:center;padding:0 20px 16px}
-.role-line .who{font-size:10.5px;letter-spacing:.2em;color:var(--accent)}
-.role-line .quote{margin-top:8px;font-size:13px;line-height:1.7;color:#DCE4F6;font-style:italic}
-.role-line .quote::before{content:"「";opacity:.55}
-.role-line .quote::after{content:"」";opacity:.55}
+.ava-kicker{position:relative;font-size:9.5px;letter-spacing:.24em;color:var(--dim2);margin-bottom:15px}
+.ava-ring{position:relative;width:136px;height:136px;margin:0 auto 15px}
+.ava-ring::after{
+  content:"";position:absolute;inset:-18px;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle,var(--glow,#F5D34A66) 0%,rgba(0,0,0,0) 66%);opacity:.5;
+}
+.ava{width:136px;height:136px;display:none;border-radius:50%}
+.ava.on{display:block;animation:avaIn .62s cubic-bezier(.2,1.3,.4,1)}
+@keyframes avaIn{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:none}}
+.orbit-mini{animation:spin 20s linear infinite;transform-origin:60px 60px;transform-box:view-box}
+.ava-who{position:relative;font-size:11px;letter-spacing:.16em;color:var(--accent);margin-bottom:9px}
+.ava-quote{position:relative;font-size:13.5px;line-height:1.75;color:#E2E9FA;font-style:italic;padding:0 4px}
+.ava-quote::before{content:"「";opacity:.55}
+.ava-quote::after{content:"」";opacity:.55}
 
 /* 类型标题 */
 .type-box{text-align:center;margin-bottom:22px}
@@ -416,14 +423,220 @@ h1.title{
       <div class="r mono">ID<b id="r-id">---</b></div>
     </div>
 
-    <div class="char-card" id="char-card">
-      <div class="avatar" id="avatar"></div>
-      <div class="role-line">
-        <div class="who mono" id="r-role">—</div>
-        <div class="quote" id="r-quote">—</div>
-      </div>
-    </div>
+    <div class="ava-card" id="ava-card">
+      <div class="ava-kicker mono">YOUR SONIC AVATAR · 你的声音化身</div>
+      <div class="ava-ring">
 
+        <!-- ① 霓虹脉冲：耳机 + 挑染 -->
+        <svg class="ava" data-k="pulse" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+          <defs><clipPath id="cp-pulse"><circle cx="60" cy="60" r="58"/></clipPath>
+            <linearGradient id="bg-pulse" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#2A396F"/><stop offset="1" stop-color="#151E3E"/></linearGradient></defs>
+          <g clip-path="url(#cp-pulse)">
+            <rect width="120" height="120" fill="url(#bg-pulse)"/>
+            <circle cx="60" cy="46" r="44" fill="#3FE0D0" opacity=".16"/>
+            <g class="orbit-mini">
+              <g fill="#3FE0D0" transform="translate(60,13) rotate(8)"><circle r="3"/><rect x="2" y="-12" width="1.8" height="12" rx=".9"/><path d="M3.8 -12 q5 2.4 4 7.6 q-1.8 -4.6 -4 -5.2 z"/></g>
+              <g fill="#3FE0D0" transform="translate(105,70) rotate(-16)" opacity=".8"><circle r="3"/><rect x="2" y="-12" width="1.8" height="12" rx=".9"/><path d="M3.8 -12 q5 2.4 4 7.6 q-1.8 -4.6 -4 -5.2 z"/></g>
+              <g fill="#DCE4F6" transform="translate(15,74) rotate(20)" opacity=".7"><circle r="3"/><rect x="2" y="-12" width="1.8" height="12" rx=".9"/><path d="M3.8 -12 q5 2.4 4 7.6 q-1.8 -4.6 -4 -5.2 z"/></g>
+            </g>
+            <path d="M8 120 c0 -27 23 -41 52 -41 s52 14 52 41 z" fill="#2C3C74" stroke="#11172C" stroke-width="2.6"/>
+            <path d="M46 79 l14 16 l14 -16" fill="#1B2548" stroke="#11172C" stroke-width="2.6" stroke-linejoin="round"/>
+            <path d="M24 101 h72" stroke="#3FE0D0" stroke-width="2.4" opacity=".5"/>
+            <rect x="51" y="68" width="18" height="18" rx="4" fill="#FFD8B4" stroke="#11172C" stroke-width="2.4"/>
+            <ellipse cx="60" cy="56" rx="29" ry="33" fill="#FFD8B4" stroke="#11172C" stroke-width="2.6"/>
+            <circle cx="31" cy="60" r="6" fill="#FFD8B4" stroke="#11172C" stroke-width="2.4"/>
+            <circle cx="89" cy="60" r="6" fill="#FFD8B4" stroke="#11172C" stroke-width="2.4"/>
+            <path d="M31 56 c-2 -33 13 -49 29 -49 s31 16 29 49 l-5 -17 c-8 -11 -40 -11 -48 0 z" fill="#2E2560" stroke="#11172C" stroke-width="2.6" stroke-linejoin="round"/>
+            <path d="M40 15 q20 -9 38 -1" stroke="#3FE0D0" stroke-width="4" fill="none" stroke-linecap="round"/>
+            <path d="M33 44 q27 -23 54 0" fill="none" stroke="#232E5C" stroke-width="9" stroke-linecap="round"/>
+            <circle cx="30" cy="58" r="13" fill="#26336A" stroke="#11172C" stroke-width="2.6"/>
+            <circle cx="90" cy="58" r="13" fill="#26336A" stroke="#11172C" stroke-width="2.6"/>
+            <circle cx="30" cy="58" r="6.5" fill="#3FE0D0"/><circle cx="90" cy="58" r="6.5" fill="#3FE0D0"/>
+            <ellipse cx="49" cy="56" rx="8.4" ry="9.4" fill="#fff" stroke="#11172C" stroke-width="2.2"/>
+            <ellipse cx="71" cy="56" rx="8.4" ry="9.4" fill="#fff" stroke="#11172C" stroke-width="2.2"/>
+            <circle cx="50" cy="57" r="4" fill="#1B2246"/><circle cx="72" cy="57" r="4" fill="#1B2246"/>
+            <circle cx="51.6" cy="54.4" r="1.7" fill="#fff"/><circle cx="73.6" cy="54.4" r="1.7" fill="#fff"/>
+            <path d="M41 46 q8 -5 16 -1" stroke="#11172C" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+            <path d="M79 46 q-8 -5 -16 -1" stroke="#11172C" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+            <path d="M58 66 q3.5 4 6 -1" stroke="#11172C" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+            <path d="M53 73 q7 6 14 0" stroke="#11172C" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+            <ellipse cx="38" cy="66" rx="7.5" ry="4.4" fill="#FF8E76" opacity=".5"/>
+            <ellipse cx="82" cy="66" rx="7.5" ry="4.4" fill="#FF8E76" opacity=".5"/>
+          </g>
+          <circle cx="60" cy="60" r="57" fill="none" stroke="#3FE0D0" stroke-width="2" opacity=".8"/>
+          <circle cx="60" cy="60" r="51" fill="none" stroke="#fff" stroke-width="1" opacity=".14" stroke-dasharray="2 6"/>
+        </svg>
+
+        <!-- ② 午夜蓝调：贝雷帽 + 萨克斯 -->
+        <svg class="ava" data-k="blue" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+          <defs><clipPath id="cp-blue"><circle cx="60" cy="60" r="58"/></clipPath>
+            <linearGradient id="bg-blue" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#2D3A6E"/><stop offset="1" stop-color="#171F42"/></linearGradient></defs>
+          <g clip-path="url(#cp-blue)">
+            <rect width="120" height="120" fill="url(#bg-blue)"/>
+            <circle cx="60" cy="46" r="44" fill="#7E96FF" opacity=".18"/>
+            <g class="orbit-mini">
+              <g fill="#7E96FF" transform="translate(60,13) rotate(8)"><circle r="3"/><rect x="2" y="-12" width="1.8" height="12" rx=".9"/><path d="M3.8 -12 q5 2.4 4 7.6 q-1.8 -4.6 -4 -5.2 z"/></g>
+              <g fill="#7E96FF" transform="translate(105,70) rotate(-16)" opacity=".8"><circle r="3"/><rect x="2" y="-12" width="1.8" height="12" rx=".9"/><path d="M3.8 -12 q5 2.4 4 7.6 q-1.8 -4.6 -4 -5.2 z"/></g>
+              <g fill="#DCE4F6" transform="translate(15,74) rotate(20)" opacity=".7"><circle r="3"/><rect x="2" y="-12" width="1.8" height="12" rx=".9"/><path d="M3.8 -12 q5 2.4 4 7.6 q-1.8 -4.6 -4 -5.2 z"/></g>
+            </g>
+            <path d="M8 120 c0 -27 23 -41 52 -41 s52 14 52 41 z" fill="#46568F" stroke="#11172C" stroke-width="2.6"/>
+            <path d="M46 78 q14 15 28 0 v-9 q-14 15 -28 0 z" fill="#3A4880" stroke="#11172C" stroke-width="2.6" stroke-linejoin="round"/>
+            <rect x="51" y="68" width="18" height="18" rx="4" fill="#D9A276" stroke="#11172C" stroke-width="2.4"/>
+            <ellipse cx="60" cy="56" rx="29" ry="33" fill="#D9A276" stroke="#11172C" stroke-width="2.6"/>
+            <circle cx="31" cy="60" r="6" fill="#D9A276" stroke="#11172C" stroke-width="2.4"/>
+            <circle cx="89" cy="60" r="6" fill="#D9A276" stroke="#11172C" stroke-width="2.4"/>
+            <path d="M32 58 c-2 -32 12 -46 28 -46 s30 14 28 44 l-6 -12 c-9 -10 -34 -9 -44 3 z" fill="#2C2440" stroke="#11172C" stroke-width="2.6" stroke-linejoin="round"/>
+            <ellipse cx="64" cy="28" rx="31" ry="11" fill="#33407A" stroke="#11172C" stroke-width="2.6" transform="rotate(-9 64 28)"/>
+            <path d="M40 34 q24 12 48 -6" stroke="#11172C" stroke-width="2.2" fill="none" opacity=".4"/>
+            <circle cx="77" cy="16" r="4.2" fill="#33407A" stroke="#11172C" stroke-width="2.4"/>
+            <g stroke="#11172C" stroke-width="2.6" fill="none" stroke-linecap="round">
+              <path d="M40 57 q9 7 18 0"/><path d="M62 57 q9 7 18 0"/>
+              <path d="M41 48 q8 -5 15 -1"/><path d="M79 48 q-8 -5 -15 -1"/>
+              <path d="M58 66 q3.5 4 6 -1"/>
+              <path d="M53 73 q7 6 14 0"/></g>
+            <ellipse cx="38" cy="66" rx="7.5" ry="4.4" fill="#FF8E76" opacity=".45"/>
+            <ellipse cx="82" cy="66" rx="7.5" ry="4.4" fill="#FF8E76" opacity=".45"/>
+            <path d="M70 84 L86 108" stroke="#11172C" stroke-width="15" stroke-linecap="round"/>
+            <path d="M70 84 L86 108" stroke="#EFC06A" stroke-width="10" stroke-linecap="round"/>
+            <path d="M84 103 l12 6 l-7 14 l-12 -6 z" fill="#EFC06A" stroke="#11172C" stroke-width="2.6" stroke-linejoin="round"/>
+            <g fill="#F7D89C" stroke="#11172C" stroke-width="2"><circle cx="75" cy="93" r="3"/><circle cx="80" cy="101" r="3"/></g>
+          </g>
+          <circle cx="60" cy="60" r="57" fill="none" stroke="#7E96FF" stroke-width="2" opacity=".8"/>
+          <circle cx="60" cy="60" r="51" fill="none" stroke="#fff" stroke-width="1" opacity=".14" stroke-dasharray="2 6"/>
+        </svg>
+
+        <!-- ③ 失真棱角：莫西干 + 皮夹克 -->
+        <svg class="ava" data-k="edge" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+          <defs><clipPath id="cp-edge"><circle cx="60" cy="60" r="58"/></clipPath>
+            <linearGradient id="bg-edge" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#3A2C4E"/><stop offset="1" stop-color="#181B33"/></linearGradient></defs>
+          <g clip-path="url(#cp-edge)">
+            <rect width="120" height="120" fill="url(#bg-edge)"/>
+            <circle cx="60" cy="46" r="44" fill="#FF6A54" opacity=".18"/>
+            <g class="orbit-mini">
+              <g fill="#FF6A54" transform="translate(60,13) rotate(8)"><circle r="3"/><rect x="2" y="-12" width="1.8" height="12" rx=".9"/><path d="M3.8 -12 q5 2.4 4 7.6 q-1.8 -4.6 -4 -5.2 z"/></g>
+              <g fill="#FF6A54" transform="translate(105,70) rotate(-16)" opacity=".8"><circle r="3"/><rect x="2" y="-12" width="1.8" height="12" rx=".9"/><path d="M3.8 -12 q5 2.4 4 7.6 q-1.8 -4.6 -4 -5.2 z"/></g>
+              <g fill="#DCE4F6" transform="translate(15,74) rotate(20)" opacity=".7"><circle r="3"/><rect x="2" y="-12" width="1.8" height="12" rx=".9"/><path d="M3.8 -12 q5 2.4 4 7.6 q-1.8 -4.6 -4 -5.2 z"/></g>
+            </g>
+            <path d="M8 120 c0 -27 23 -41 52 -41 s52 14 52 41 z" fill="#252B44" stroke="#11172C" stroke-width="2.6"/>
+            <path d="M46 79 l14 17 l14 -17 l-6 -3 l-8 11 l-8 -11 z" fill="#36406A" stroke="#11172C" stroke-width="2.6" stroke-linejoin="round"/>
+            <g fill="#D3DCF2" stroke="#11172C" stroke-width="1.8"><circle cx="26" cy="98" r="2.6"/><circle cx="33" cy="108" r="2.6"/><circle cx="22" cy="112" r="2.6"/></g>
+            <rect x="51" y="68" width="18" height="18" rx="4" fill="#F6C6A0" stroke="#11172C" stroke-width="2.4"/>
+            <ellipse cx="60" cy="56" rx="29" ry="33" fill="#F6C6A0" stroke="#11172C" stroke-width="2.6"/>
+            <circle cx="31" cy="60" r="6" fill="#F6C6A0" stroke="#11172C" stroke-width="2.4"/>
+            <circle cx="89" cy="60" r="6" fill="#F6C6A0" stroke="#11172C" stroke-width="2.4"/>
+            <path d="M30 58 c-5 -34 14 -50 30 -50 s33 18 28 48 l-5 -18 c-9 -11 -39 -11 -48 0 z" fill="#241F33" stroke="#11172C" stroke-width="2.6" stroke-linejoin="round"/>
+            <path d="M50 12 q10 -18 20 0 q-10 8 -20 0 z" fill="#FF6A54" stroke="#11172C" stroke-width="2.5" stroke-linejoin="round"/>
+            <ellipse cx="49" cy="57" rx="8" ry="9" fill="#fff" stroke="#11172C" stroke-width="2.2"/>
+            <ellipse cx="71" cy="57" rx="8" ry="9" fill="#fff" stroke="#11172C" stroke-width="2.2"/>
+            <circle cx="50" cy="58" r="3.9" fill="#1B2246"/><circle cx="72" cy="58" r="3.9" fill="#1B2246"/>
+            <circle cx="51.5" cy="55.5" r="1.6" fill="#fff"/><circle cx="73.5" cy="55.5" r="1.6" fill="#fff"/>
+            <g stroke="#11172C" stroke-width="2.6" fill="none" stroke-linecap="round">
+              <path d="M40 47 l17 6"/><path d="M80 47 l-17 6"/>
+              <path d="M58 67 q3.5 4 6 -1"/><path d="M50 74 q12 8 22 -5"/></g>
+            <ellipse cx="38" cy="67" rx="7.5" ry="4.4" fill="#FF8E76" opacity=".45"/>
+            <ellipse cx="82" cy="67" rx="7.5" ry="4.4" fill="#FF8E76" opacity=".45"/>
+            <path d="M96 92 l9 10 l-6 2 l7 10" stroke="#FF6A54" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".9"/>
+          </g>
+          <circle cx="60" cy="60" r="57" fill="none" stroke="#FF6A54" stroke-width="2" opacity=".8"/>
+          <circle cx="60" cy="60" r="51" fill="none" stroke="#fff" stroke-width="1" opacity=".14" stroke-dasharray="2 6"/>
+        </svg>
+
+        <!-- ④ 旷野低语：长发 + 围巾 + 小花 -->
+        <svg class="ava" data-k="wild" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+          <defs><clipPath id="cp-wild"><circle cx="60" cy="60" r="58"/></clipPath>
+            <linearGradient id="bg-wild" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#2E4056"/><stop offset="1" stop-color="#182234"/></linearGradient></defs>
+          <g clip-path="url(#cp-wild)">
+            <rect width="120" height="120" fill="url(#bg-wild)"/>
+            <circle cx="60" cy="46" r="44" fill="#A6D96B" opacity=".16"/>
+            <g class="orbit-mini">
+              <g fill="#A6D96B" transform="translate(60,13) rotate(8)"><circle r="3"/><rect x="2" y="-12" width="1.8" height="12" rx=".9"/><path d="M3.8 -12 q5 2.4 4 7.6 q-1.8 -4.6 -4 -5.2 z"/></g>
+              <g fill="#A6D96B" transform="translate(105,70) rotate(-16)" opacity=".8"><circle r="3"/><rect x="2" y="-12" width="1.8" height="12" rx=".9"/><path d="M3.8 -12 q5 2.4 4 7.6 q-1.8 -4.6 -4 -5.2 z"/></g>
+              <g fill="#DCE4F6" transform="translate(15,74) rotate(20)" opacity=".7"><circle r="3"/><rect x="2" y="-12" width="1.8" height="12" rx=".9"/><path d="M3.8 -12 q5 2.4 4 7.6 q-1.8 -4.6 -4 -5.2 z"/></g>
+            </g>
+            <path d="M8 120 c0 -27 23 -41 52 -41 s52 14 52 41 z" fill="#7B9060" stroke="#11172C" stroke-width="2.6"/>
+            <path d="M44 78 q16 12 32 0 q6 9 0 14 q-16 10 -32 0 q-6 -5 0 -14 z" fill="#D2795A" stroke="#11172C" stroke-width="2.6" stroke-linejoin="round"/>
+            <rect x="51" y="68" width="18" height="18" rx="4" fill="#FFD2AE" stroke="#11172C" stroke-width="2.4"/>
+            <ellipse cx="60" cy="46" rx="37" ry="35" fill="#7A5236" stroke="#11172C" stroke-width="2.6"/>
+            <path d="M23 48 q-6 40 2 68 q9 -18 14 -34 z" fill="#7A5236" stroke="#11172C" stroke-width="2.6" stroke-linejoin="round"/>
+            <path d="M97 48 q6 40 -2 68 q-9 -18 -14 -34 z" fill="#7A5236" stroke="#11172C" stroke-width="2.6" stroke-linejoin="round"/>
+            <ellipse cx="60" cy="56" rx="29" ry="33" fill="#FFD2AE" stroke="#11172C" stroke-width="2.6"/>
+            <circle cx="31" cy="60" r="6" fill="#FFD2AE" stroke="#11172C" stroke-width="2.4"/>
+            <circle cx="89" cy="60" r="6" fill="#FFD2AE" stroke="#11172C" stroke-width="2.4"/>
+            <path d="M31 40 q29 -21 58 0 q-15 -15 -29 -15 q-14 0 -29 15 z" fill="#6B4630" stroke="#11172C" stroke-width="2.6" stroke-linejoin="round"/>
+            <g transform="translate(88,30)">
+              <circle cx="0" cy="0" r="4.6" fill="#F5D34A" stroke="#11172C" stroke-width="2.2"/>
+              <circle cx="9" cy="4" r="4.6" fill="#F5D34A" stroke="#11172C" stroke-width="2.2"/>
+              <circle cx="4.5" cy="-7" r="4.6" fill="#F5D34A" stroke="#11172C" stroke-width="2.2"/>
+              <circle cx="4.5" cy="-1" r="2.8" fill="#A6D96B" stroke="#11172C" stroke-width="1.8"/></g>
+            <g stroke="#11172C" stroke-width="2.6" fill="none" stroke-linecap="round">
+              <path d="M40 57 q9 -8 18 0"/><path d="M62 57 q9 -8 18 0"/>
+              <path d="M41 47 q9 -6 17 -1"/><path d="M79 47 q-9 -6 -17 -1"/>
+              <path d="M58 66 q3.5 4 6 -1"/>
+              <path d="M53 73 q7 6 14 0"/></g>
+            <ellipse cx="38" cy="66" rx="7.5" ry="4.4" fill="#FF8E76" opacity=".5"/>
+            <ellipse cx="82" cy="66" rx="7.5" ry="4.4" fill="#FF8E76" opacity=".5"/>
+          </g>
+          <circle cx="60" cy="60" r="57" fill="none" stroke="#A6D96B" stroke-width="2" opacity=".8"/>
+          <circle cx="60" cy="60" r="51" fill="none" stroke="#fff" stroke-width="1" opacity=".14" stroke-dasharray="2 6"/>
+        </svg>
+
+        <!-- ⑤ 穹顶回响：卷发 + 领结 + 小提琴 -->
+        <svg class="ava" data-k="echo" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+          <defs><clipPath id="cp-echo"><circle cx="60" cy="60" r="58"/></clipPath>
+            <linearGradient id="bg-echo" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#3A3468"/><stop offset="1" stop-color="#1A1F42"/></linearGradient></defs>
+          <g clip-path="url(#cp-echo)">
+            <rect width="120" height="120" fill="url(#bg-echo)"/>
+            <circle cx="60" cy="46" r="44" fill="#F0C95E" opacity=".18"/>
+            <g class="orbit-mini">
+              <g fill="#F0C95E" transform="translate(60,13) rotate(8)"><circle r="3"/><rect x="2" y="-12" width="1.8" height="12" rx=".9"/><path d="M3.8 -12 q5 2.4 4 7.6 q-1.8 -4.6 -4 -5.2 z"/></g>
+              <g fill="#F0C95E" transform="translate(105,70) rotate(-16)" opacity=".8"><circle r="3"/><rect x="2" y="-12" width="1.8" height="12" rx=".9"/><path d="M3.8 -12 q5 2.4 4 7.6 q-1.8 -4.6 -4 -5.2 z"/></g>
+              <g fill="#DCE4F6" transform="translate(15,74) rotate(20)" opacity=".7"><circle r="3"/><rect x="2" y="-12" width="1.8" height="12" rx=".9"/><path d="M3.8 -12 q5 2.4 4 7.6 q-1.8 -4.6 -4 -5.2 z"/></g>
+            </g>
+            <path d="M8 120 c0 -27 23 -41 52 -41 s52 14 52 41 z" fill="#26326A" stroke="#11172C" stroke-width="2.6"/>
+            <path d="M46 79 l14 21 l14 -21 l-6 -3 l-8 13 l-8 -13 z" fill="#F2F5FC" stroke="#11172C" stroke-width="2.6" stroke-linejoin="round"/>
+            <path d="M60 78 l-9 -5 v11 z" fill="#F0C95E" stroke="#11172C" stroke-width="2.4" stroke-linejoin="round"/>
+            <path d="M60 78 l9 -5 v11 z" fill="#F0C95E" stroke="#11172C" stroke-width="2.4" stroke-linejoin="round"/>
+            <circle cx="60" cy="79" r="3" fill="#F0C95E" stroke="#11172C" stroke-width="2"/>
+            <rect x="51" y="68" width="18" height="18" rx="4" fill="#F8DCBE" stroke="#11172C" stroke-width="2.4"/>
+            <ellipse cx="60" cy="56" rx="29" ry="33" fill="#F8DCBE" stroke="#11172C" stroke-width="2.6"/>
+            <circle cx="31" cy="60" r="6" fill="#F8DCBE" stroke="#11172C" stroke-width="2.4"/>
+            <circle cx="89" cy="60" r="6" fill="#F8DCBE" stroke="#11172C" stroke-width="2.4"/>
+            <g><circle cx="40" cy="36" r="15" fill="#4A3626" stroke="#11172C" stroke-width="2.6"/>
+              <circle cx="60" cy="26" r="17" fill="#4A3626" stroke="#11172C" stroke-width="2.6"/>
+              <circle cx="80" cy="36" r="15" fill="#4A3626" stroke="#11172C" stroke-width="2.6"/>
+              <circle cx="46" cy="52" r="11" fill="#4A3626" stroke="#11172C" stroke-width="2.6"/>
+              <circle cx="74" cy="52" r="11" fill="#4A3626" stroke="#11172C" stroke-width="2.6"/>
+              <circle cx="60" cy="44" r="13" fill="#4A3626" stroke="#11172C" stroke-width="2.6"/>
+              <circle cx="40" cy="36" r="12" fill="#4A3626"/><circle cx="60" cy="26" r="14" fill="#4A3626"/>
+              <circle cx="80" cy="36" r="12" fill="#4A3626"/><circle cx="46" cy="52" r="8" fill="#4A3626"/>
+              <circle cx="74" cy="52" r="8" fill="#4A3626"/><circle cx="60" cy="44" r="10" fill="#4A3626"/></g>
+            <g stroke="#11172C" stroke-width="2.6" fill="none" stroke-linecap="round">
+              <path d="M40 57 q9 8 18 0"/><path d="M62 57 q9 8 18 0"/>
+              <path d="M41 47 q9 -7 17 -2"/><path d="M79 47 q-9 -7 -17 -2"/>
+              <path d="M58 66 q3.5 4 6 -1"/></g>
+            <ellipse cx="60" cy="74" rx="4.6" ry="5.6" fill="#A85A4A" stroke="#11172C" stroke-width="2.2"/>
+            <ellipse cx="38" cy="66" rx="7.5" ry="4.4" fill="#FF8E76" opacity=".45"/>
+            <ellipse cx="82" cy="66" rx="7.5" ry="4.4" fill="#FF8E76" opacity=".45"/>
+            <g transform="translate(88,100) rotate(-20)">
+              <ellipse cx="0" cy="0" rx="10" ry="14" fill="#9E5A32" stroke="#11172C" stroke-width="2.6"/>
+              <rect x="-2.5" y="-22" width="5" height="13" rx="1.5" fill="#5E3218" stroke="#11172C" stroke-width="2.4"/>
+              <g stroke="#F2F5FC" stroke-width="1.1" opacity=".85"><path d="M-1.5 -18 v30"/><path d="M1.5 -18 v30"/></g></g>
+            <path d="M20 84 L92 112" stroke="#EFE6D2" stroke-width="3" stroke-linecap="round"/>
+            <path d="M20 84 L92 112" stroke="#11172C" stroke-width="1" stroke-linecap="round" opacity=".3"/>
+          </g>
+          <circle cx="60" cy="60" r="57" fill="none" stroke="#F0C95E" stroke-width="2" opacity=".8"/>
+          <circle cx="60" cy="60" r="51" fill="none" stroke="#fff" stroke-width="1" opacity=".14" stroke-dasharray="2 6"/>
+        </svg>
+
+      </div>
+      <div class="ava-who mono" id="r-role">—</div>
+      <div class="ava-quote" id="r-quote">—</div>
+    </div>
     <div class="type-box">
       <div class="type-en mono" id="r-en">—</div>
       <h1 class="type-cn" id="r-cn">—</h1>
@@ -623,9 +836,9 @@ const NOTE_SVG = '<svg viewBox="0 0 20 26" width="15" height="20" xmlns="http://
   for(i=0;i<3;i++){
     const m = document.createElement('i');
     m.className = 'meteor';
-    m.style.cssText = 'top:'+(6+Math.random()*44).toFixed(0)+'%;left:'+(34+Math.random()*58).toFixed(0)
-      +'%;animation-delay:'+(2.5+i*7+Math.random()*3).toFixed(1)+'s;animation-duration:'
-      +(7.5+Math.random()*3.5).toFixed(1)+'s';
+    m.style.cssText = 'top:'+(1+Math.random()*34).toFixed(0)+'%;left:'+(66+Math.random()*26).toFixed(0)
+      +'%;animation-delay:'+(2.5+i*6.5+Math.random()*3).toFixed(1)+'s;animation-duration:'
+      +(7+Math.random()*3).toFixed(1)+'s';
     sky.appendChild(m);
   }
 
@@ -640,233 +853,6 @@ const NOTE_SVG = '<svg viewBox="0 0 20 26" width="15" height="20" xmlns="http://
     sky.appendChild(n);
   }
 })();
-
-/* =========================================================
-   卡通角色（几何化手绘 SVG）
-   ========================================================= */
-const INK = '#11172C';
-const SKIN = {pulse:'#FFD8B4', blue:'#D9A276', edge:'#F6C6A0', wild:'#FFD2AE', echo:'#F8DCBE'};
-const EYE_WHITE = '#FFFFFF', PUPIL = '#1B2246';
-
-function faceSVG(kind){
-  let eyes = '';
-  if(kind === 'happy'){
-    eyes = '<g fill="none" stroke="'+INK+'" stroke-width="3.4" stroke-linecap="round">'
-      + '<path d="M100 160 q11 -11 22 0"/><path d="M138 160 q11 -11 22 0"/></g>';
-  } else if(kind === 'calm'){
-    eyes = '<g fill="none" stroke="'+INK+'" stroke-width="3.4" stroke-linecap="round">'
-      + '<path d="M99 158 q12 9 24 0"/><path d="M137 158 q12 9 24 0"/></g>'
-      + '<g stroke="'+INK+'" stroke-width="2.6" stroke-linecap="round" fill="none">'
-      + '<path d="M100 150 q10 -7 20 -2"/><path d="M160 150 q-10 -7 -20 -2"/></g>';
-  } else if(kind === 'sleep'){
-    eyes = '<g fill="none" stroke="'+INK+'" stroke-width="3.4" stroke-linecap="round">'
-      + '<path d="M99 158 q12 10 24 0"/><path d="M137 158 q12 10 24 0"/></g>'
-      + '<g stroke="'+INK+'" stroke-width="2.8" stroke-linecap="round" fill="none">'
-      + '<path d="M101 148 q9 -8 18 -2"/><path d="M159 148 q-9 -8 -18 -2"/></g>';
-  } else if(kind === 'sharp'){
-    eyes = '<g fill="none" stroke="'+INK+'" stroke-width="3.4" stroke-linecap="round">'
-      + '<path d="M98 140 l22 7"/><path d="M162 140 l-22 7"/></g>'
-      + '<ellipse cx="110" cy="158" rx="11" ry="12" fill="'+EYE_WHITE+'" stroke="'+INK+'" stroke-width="2.6"/>'
-      + '<ellipse cx="150" cy="158" rx="11" ry="12" fill="'+EYE_WHITE+'" stroke="'+INK+'" stroke-width="2.6"/>'
-      + '<circle cx="111" cy="160" r="5.4" fill="'+PUPIL+'"/><circle cx="151" cy="160" r="5.4" fill="'+PUPIL+'"/>'
-      + '<circle cx="113.2" cy="157" r="2.1" fill="#FFFFFF"/><circle cx="153.2" cy="157" r="2.1" fill="#FFFFFF"/>';
-  } else {
-    eyes =
-      '<ellipse cx="110" cy="158" rx="12" ry="13.5" fill="'+EYE_WHITE+'" stroke="'+INK+'" stroke-width="2.6"/>'
-      + '<ellipse cx="150" cy="158" rx="12" ry="13.5" fill="'+EYE_WHITE+'" stroke="'+INK+'" stroke-width="2.6"/>'
-      + '<circle cx="112" cy="160" r="6" fill="'+PUPIL+'"/><circle cx="152" cy="160" r="6" fill="'+PUPIL+'"/>'
-      + '<circle cx="114.4" cy="156.6" r="2.3" fill="#FFFFFF"/><circle cx="154.4" cy="156.6" r="2.3" fill="#FFFFFF"/>';
-  }
-  const brow = (kind === 'open')
-    ? '<g stroke="'+INK+'" stroke-width="3" stroke-linecap="round" fill="none">'
-      + '<path d="M99 141 q11 -7 22 -1"/><path d="M161 141 q-11 -7 -22 -1"/></g>' : '';
-  const mouth = (kind === 'sharp')
-    ? '<path d="M116 184 q16 11 30 -7" fill="none" stroke="'+INK+'" stroke-width="3.2" stroke-linecap="round"/>'
-    : (kind === 'sleep'
-      ? '<ellipse cx="130" cy="184" rx="6.5" ry="8" fill="#A85A4A" stroke="'+INK+'" stroke-width="2.4"/>'
-      : '<path d="M120 183 q10 9 20 0" fill="none" stroke="'+INK+'" stroke-width="3.2" stroke-linecap="round"/>');
-  const nose = '<path d="M127 168 q5 5 9 -1" fill="none" stroke="'+INK+'" stroke-width="2.6" stroke-linecap="round"/>';
-  const blush = '<g opacity=".5"><ellipse cx="99" cy="174" rx="9.5" ry="5.6" fill="#FF8E76"/>'
-    + '<ellipse cx="161" cy="174" rx="9.5" ry="5.6" fill="#FF8E76"/></g>';
-  return brow + eyes + nose + mouth + blush;
-}
-
-function orbitSVG(c){
-  const mk = function(col){
-    return '<g fill="'+col+'"><circle cx="0" cy="0" r="4.2"/>'
-      + '<rect x="3" y="-17" width="2.4" height="17" rx="1.2"/>'
-      + '<path d="M5.4 -17 q7 3.4 5.8 10.6 q-2.5 -6.2 -5.8 -7.2 z"/></g>';
-  };
-  const P = function(a,r){ const rad = a*Math.PI/180; return [(130+Math.cos(rad)*r).toFixed(1),(142+Math.sin(rad)*r).toFixed(1)]; };
-  let n1 = '', n2 = '';
-  [ [-90, 118], [ 30, 118 ], [ 150, 118 ] ].forEach(function(p){
-    const xy = P(p[0], p[1]);
-    n1 += '<g transform="translate('+xy[0]+','+xy[1]+') rotate(12)">'+mk(c)+'</g>';
-  });
-  [ [ 210, 100 ], [ 330, 100 ] ].forEach(function(p){
-    const xy = P(p[0], p[1]);
-    n2 += '<g transform="translate('+xy[0]+','+xy[1]+') rotate(-10)" opacity=".7">'+mk('#DCE4F6')+'</g>';
-  });
-  return '<circle cx="130" cy="142" r="118" fill="none" stroke="'+c+'" stroke-width="1.2" '
-    + 'stroke-dasharray="2 9" opacity=".45"/>'
-    + '<g class="orbit">'+n1+'</g><g class="orbit-r">'+n2+'</g>';
-}
-
-function charSVG(t){
-  const c = t.color, skin = SKIN[t.key];
-  let body='', hair='', hairBack='', gear='', extra='', fk='open';
-
-  if(t.key === 'pulse'){
-    fk = 'open';
-    body = '<path d="M58 300 c0 -52 32 -76 72 -76 c40 0 72 24 72 76 z" fill="#2C3C74" stroke="'+INK+'" stroke-width="3"/>'
-      + '<path d="M104 224 l26 32 l26 -32" fill="#1B2548" stroke="'+INK+'" stroke-width="3" stroke-linejoin="round"/>'
-      + '<path d="M74 268 h112" stroke="'+c+'" stroke-width="3" opacity=".65"/>'
-      + '<path d="M74 282 h112" stroke="'+c+'" stroke-width="2" opacity=".35"/>'
-      + '<circle cx="130" cy="288" r="9" fill="none" stroke="'+c+'" stroke-width="2.6"/>'
-      + '<path d="M130 281 l4 8 h-8 z" fill="'+c+'"/>';
-    hair = '<path d="M86 152 c-4 -54 20 -78 44 -78 c24 0 48 24 44 78 l-7 -28 c-12 -17 -62 -17 -74 0 z" '
-      + 'fill="#2E2560" stroke="'+INK+'" stroke-width="3" stroke-linejoin="round"/>'
-      + '<path d="M106 84 q22 -13 44 -1" stroke="'+c+'" stroke-width="6" fill="none" stroke-linecap="round"/>';
-    gear = '<path d="M80 140 q50 -48 100 0" fill="none" stroke="#232E5C" stroke-width="14" stroke-linecap="round"/>'
-      + '<path d="M80 140 q50 -48 100 0" fill="none" stroke="'+INK+'" stroke-width="3" stroke-linecap="round" opacity=".3"/>'
-      + '<circle cx="78" cy="162" r="25" fill="#26336A" stroke="'+INK+'" stroke-width="3"/>'
-      + '<circle cx="182" cy="162" r="25" fill="#26336A" stroke="'+INK+'" stroke-width="3"/>'
-      + '<circle cx="78" cy="162" r="13" fill="'+c+'"/><circle cx="182" cy="162" r="13" fill="'+c+'"/>'
-      + '<circle cx="78" cy="162" r="5" fill="#141C36" opacity=".55"/>'
-      + '<circle cx="182" cy="162" r="5" fill="#141C36" opacity=".55"/>';
-    extra = '<g transform="translate(42,254)">'
-      + '<circle cx="0" cy="0" r="27" fill="#16203F" stroke="'+INK+'" stroke-width="3"/>'
-      + '<circle cx="0" cy="0" r="19" fill="none" stroke="rgba(255,255,255,.16)" stroke-width="1.5"/>'
-      + '<circle cx="0" cy="0" r="13" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="1.5"/>'
-      + '<circle cx="0" cy="0" r="7.5" fill="'+c+'"/><circle cx="0" cy="0" r="2.4" fill="#16203F"/></g>';
-  }
-
-  if(t.key === 'blue'){
-    fk = 'calm';
-    body = '<path d="M58 300 c0 -52 32 -76 72 -76 c40 0 72 24 72 76 z" fill="#46568F" stroke="'+INK+'" stroke-width="3"/>'
-      + '<path d="M104 222 q26 28 52 0 v-16 q-26 28 -52 0 z" fill="#3A4880" stroke="'+INK+'" stroke-width="3" stroke-linejoin="round"/>'
-      + '<path d="M112 222 v-8 h36 v8" fill="none" stroke="'+INK+'" stroke-width="3"/>';
-    hair = '<path d="M86 154 c-4 -52 20 -74 44 -74 c22 0 40 16 44 42 l-9 -12 c-14 -14 -54 -13 -68 3 z" '
-      + 'fill="#2C2440" stroke="'+INK+'" stroke-width="3" stroke-linejoin="round"/>';
-    gear = '<ellipse cx="134" cy="96" rx="52" ry="20" fill="#33407A" stroke="'+INK+'" stroke-width="3" transform="rotate(-9 134 96)"/>'
-      + '<path d="M98 104 q36 18 74 -6" stroke="'+INK+'" stroke-width="3" fill="none" opacity=".45"/>'
-      + '<circle cx="152" cy="74" r="6.5" fill="#33407A" stroke="'+INK+'" stroke-width="3"/>'
-      + '<path d="M138 192 L174 242" stroke="'+INK+'" stroke-width="22" stroke-linecap="round"/>'
-      + '<path d="M138 192 L174 242" stroke="#EFC06A" stroke-width="15" stroke-linecap="round"/>'
-      + '<path d="M172 240 l24 12 l-12 22 l-22 -14 z" fill="#EFC06A" stroke="'+INK+'" stroke-width="3" stroke-linejoin="round"/>'
-      + '<path d="M188 250 q10 2 12 12 q-12 0 -16 -6 z" fill="#C99646" stroke="'+INK+'" stroke-width="2.6"/>'
-      + '<g fill="#F7D89C" stroke="'+INK+'" stroke-width="2.4">'
-      + '<circle cx="152" cy="208" r="4"/><circle cx="162" cy="223" r="4"/><circle cx="170" cy="236" r="4"/></g>';
-    extra = '<g transform="translate(18,244)">'
-      + '<path d="M0 0 h30 v22 a9 9 0 0 1 -9 9 h-12 a9 9 0 0 1 -9 -9 z" fill="#EEF2FB" stroke="'+INK+'" stroke-width="3"/>'
-      + '<path d="M30 5 h7 a7 7 0 0 1 0 14 h-7" fill="none" stroke="'+INK+'" stroke-width="3"/>'
-      + '<path d="M3 4 h24" stroke="#B9C5DE" stroke-width="3" stroke-linecap="round"/>'
-      + '<g stroke="#C8D4EC" stroke-width="2.4" fill="none" stroke-linecap="round">'
-      + '<path d="M9 -11 q5 -8 0 -14"/><path d="M21 -11 q5 -8 0 -16"/></g></g>';
-  }
-
-  if(t.key === 'edge'){
-    fk = 'sharp';
-    body = '<path d="M58 300 c0 -52 32 -76 72 -76 c40 0 72 24 72 76 z" fill="#252B44" stroke="'+INK+'" stroke-width="3"/>'
-      + '<path d="M104 224 l26 34 l26 -34 l-11 -5 l-15 20 l-15 -20 z" fill="#36406A" stroke="'+INK+'" stroke-width="3" stroke-linejoin="round"/>'
-      + '<path d="M130 258 v42" stroke="#D3DCF2" stroke-width="2.6"/>'
-      + '<circle cx="130" cy="274" r="4.5" fill="#D3DCF2" stroke="'+INK+'" stroke-width="2"/>'
-      + '<g fill="#D3DCF2" stroke="'+INK+'" stroke-width="2">'
-      + '<circle cx="86" cy="252" r="3.6"/><circle cx="94" cy="268" r="3.6"/><circle cx="82" cy="284" r="3.6"/></g>'
-      + '<circle cx="170" cy="240" r="6.5" fill="'+c+'" stroke="'+INK+'" stroke-width="2.6"/>';
-    hair = '<path d="M84 154 c-8 -54 20 -80 46 -80 c28 0 54 30 46 78 l-8 -30 c-14 -17 -64 -17 -78 0 z" '
-      + 'fill="#241F33" stroke="'+INK+'" stroke-width="3" stroke-linejoin="round"/>'
-      + '<path d="M112 78 q18 -30 36 0 q-18 11 -36 0 z" fill="'+c+'" stroke="'+INK+'" stroke-width="3" stroke-linejoin="round"/>'
-      + '<path d="M94 108 l-15 -11" stroke="#241F33" stroke-width="7" stroke-linecap="round"/>'
-      + '<path d="M166 110 l15 -13" stroke="#241F33" stroke-width="7" stroke-linecap="round"/>';
-    gear = '<g transform="rotate(-32 170 234)">'
-      + '<rect x="152" y="196" width="14" height="32" rx="3" fill="#9A6537" stroke="'+INK+'" stroke-width="3"/>'
-      + '<ellipse cx="159" cy="256" rx="27" ry="33" fill="'+c+'" stroke="'+INK+'" stroke-width="3"/>'
-      + '<rect x="146" y="248" width="26" height="11" rx="2.5" fill="#23283E" stroke="'+INK+'" stroke-width="2.6"/>'
-      + '<circle cx="159" cy="238" r="5" fill="#23283E" stroke="'+INK+'" stroke-width="2.4"/></g>'
-      + '<g stroke="#EEF2FB" stroke-width="1.5" opacity=".85"><path d="M186 268 L208 250"/><path d="M189 274 L211 256"/></g>'
-      + '<circle cx="176" cy="164" r="3.6" fill="#D3DCF2" stroke="'+INK+'" stroke-width="2"/>';
-    extra = '<g opacity=".9"><path d="M204 92 l15 13 l-15 13" stroke="'+c+'" stroke-width="4.5" fill="none" '
-      + 'stroke-linecap="round" stroke-linejoin="round"/>'
-      + '<path d="M46 116 l-15 13 l15 13" stroke="'+c+'" stroke-width="4.5" fill="none" '
-      + 'stroke-linecap="round" stroke-linejoin="round" opacity=".55"/></g>';
-  }
-
-  if(t.key === 'wild'){
-    fk = 'happy';
-    body = '<path d="M58 300 c0 -52 32 -76 72 -76 c40 0 72 24 72 76 z" fill="#7B9060" stroke="'+INK+'" stroke-width="3"/>'
-      + '<path d="M104 224 l26 32 l26 -32" fill="#EFE3C6" stroke="'+INK+'" stroke-width="3" stroke-linejoin="round"/>'
-      + '<path d="M100 220 q30 22 60 0 q9 15 1 24 q-31 19 -62 0 q-8 -9 1 -24 z" '
-      + 'fill="#D2795A" stroke="'+INK+'" stroke-width="3" stroke-linejoin="round"/>'
-      + '<path d="M158 240 q13 15 9 36 l-15 -7 q5 -19 -6 -27 z" fill="#D2795A" stroke="'+INK+'" stroke-width="3" stroke-linejoin="round"/>'
-      + '<circle cx="130" cy="280" r="4" fill="#DCCB9C" stroke="'+INK+'" stroke-width="2"/>';
-    hairBack = '<ellipse cx="130" cy="140" rx="58" ry="56" fill="#7A5236" stroke="'+INK+'" stroke-width="3"/>'
-      + '<path d="M72 140 q-6 60 4 96 q10 -26 16 -44 z" fill="#7A5236" stroke="'+INK+'" stroke-width="3" stroke-linejoin="round"/>'
-      + '<path d="M188 140 q6 60 -4 96 q-10 -26 -16 -44 z" fill="#7A5236" stroke="'+INK+'" stroke-width="3" stroke-linejoin="round"/>';
-    hair = '<path d="M86 130 q44 -32 88 0 q-20 -22 -44 -22 q-24 0 -44 22 z" fill="#6B4630" stroke="'+INK+'" stroke-width="3" stroke-linejoin="round"/>'
-      + '<g transform="translate(186,104)">'
-      + '<circle cx="0" cy="0" r="5.5" fill="#F5D34A" stroke="'+INK+'" stroke-width="2.6"/>'
-      + '<circle cx="11" cy="5" r="5.5" fill="#F5D34A" stroke="'+INK+'" stroke-width="2.6"/>'
-      + '<circle cx="5.5" cy="-8" r="5.5" fill="#F5D34A" stroke="'+INK+'" stroke-width="2.6"/>'
-      + '<circle cx="5.5" cy="-1" r="3.2" fill="'+c+'" stroke="'+INK+'" stroke-width="2"/></g>';
-    gear = '<g transform="translate(196,226) rotate(16)">'
-      + '<ellipse cx="0" cy="10" rx="25" ry="31" fill="#D89A56" stroke="'+INK+'" stroke-width="3"/>'
-      + '<circle cx="0" cy="8" r="9.5" fill="#3A2418" stroke="'+INK+'" stroke-width="2.6"/>'
-      + '<rect x="-14" y="28" width="28" height="7" rx="2.5" fill="#9A6537" stroke="'+INK+'" stroke-width="2.6"/>'
-      + '<rect x="-5" y="-46" width="10" height="26" rx="2" fill="#9A6537" stroke="'+INK+'" stroke-width="3"/>'
-      + '<g stroke="#F2F6FF" stroke-width="1.4" opacity=".8"><path d="M-3 -22 v54"/><path d="M2 -22 v54"/></g></g>';
-    extra = '<g opacity=".85"><path d="M46 176 q-11 -15 2 -24" stroke="'+c+'" stroke-width="3" fill="none" stroke-linecap="round"/>'
-      + '<path d="M38 152 q-9 -6 -2 -15 q9 0 11 9 z" fill="'+c+'" stroke="'+INK+'" stroke-width="2.6"/></g>';
-  }
-
-  if(t.key === 'echo'){
-    fk = 'sleep';
-    body = '<path d="M58 300 c0 -52 32 -76 72 -76 c40 0 72 24 72 76 z" fill="#26326A" stroke="'+INK+'" stroke-width="3"/>'
-      + '<path d="M104 224 l26 42 l26 -42 l-11 -5 l-15 26 l-15 -26 z" fill="#F2F5FC" stroke="'+INK+'" stroke-width="3" stroke-linejoin="round"/>'
-      + '<path d="M130 220 l-17 -9 v19 z" fill="'+c+'" stroke="'+INK+'" stroke-width="3" stroke-linejoin="round"/>'
-      + '<path d="M130 220 l17 -9 v19 z" fill="'+c+'" stroke="'+INK+'" stroke-width="3" stroke-linejoin="round"/>'
-      + '<circle cx="130" cy="221" r="5" fill="'+c+'" stroke="'+INK+'" stroke-width="3"/>';
-    const curls = [[92,112,23],[130,94,26],[168,112,23],[104,134,17],[156,134,17],[130,118,20]];
-    hairBack = '<ellipse cx="130" cy="132" rx="54" ry="52" fill="#4A3626" stroke="'+INK+'" stroke-width="3"/>';
-    hair = '<g>' + curls.map(function(p){
-        return '<circle cx="'+p[0]+'" cy="'+p[1]+'" r="'+(p[2]+3)+'" fill="#4A3626" stroke="'+INK+'" stroke-width="3"/>';
-      }).join('')
-      + curls.map(function(p){
-        return '<circle cx="'+p[0]+'" cy="'+p[1]+'" r="'+p[2]+'" fill="#4A3626"/>';
-      }).join('') + '</g>'
-      + '<path d="M94 132 q10 13 4 27" stroke="#2E2115" stroke-width="4" fill="none" stroke-linecap="round" opacity=".55"/>';
-    gear = '<g transform="translate(72,246) rotate(-20)">'
-      + '<ellipse cx="0" cy="8" rx="18" ry="26" fill="#9E5A32" stroke="'+INK+'" stroke-width="3"/>'
-      + '<rect x="-4" y="-38" width="8" height="24" rx="2" fill="#5E3218" stroke="'+INK+'" stroke-width="3"/>'
-      + '<g stroke="#2B1409" stroke-width="2.4" fill="none" stroke-linecap="round">'
-      + '<path d="M-8 -2 q-4 11 0 21"/><path d="M8 -2 q4 11 0 21"/></g>'
-      + '<rect x="-9" y="26" width="18" height="5.5" rx="2" fill="#2B1409"/>'
-      + '<g stroke="#F2F5FC" stroke-width="1.3" opacity=".85"><path d="M-2 -34 v68"/><path d="M2 -34 v68"/></g></g>'
-      + '<path d="M28 198 L124 272" stroke="#EFE6D2" stroke-width="3.4" stroke-linecap="round"/>'
-      + '<path d="M28 198 L124 272" stroke="'+INK+'" stroke-width="1" stroke-linecap="round" opacity=".3"/>';
-    extra = '<g fill="'+c+'">'
-      + '<path d="M206 80 l3.2 7.4 l7.4 3.2 l-7.4 3.2 l-3.2 7.4 l-3.2 -7.4 l-7.4 -3.2 l7.4 -3.2 z" opacity=".95"/>'
-      + '<path d="M46 132 l2.6 6 l6 2.6 l-6 2.6 l-2.6 6 l-2.6 -6 l-6 -2.6 l6 -2.6 z" opacity=".75"/>'
-      + '<circle cx="222" cy="150" r="3.2" opacity=".7"/><circle cx="38" cy="182" r="2.6" opacity=".6"/></g>';
-  }
-
-  const neck = '<path d="M117 200 h26 v30 h-26 z" fill="'+skin+'" stroke="'+INK+'" stroke-width="3" stroke-linejoin="round"/>';
-  const head = '<ellipse cx="130" cy="158" rx="46" ry="52" fill="'+skin+'" stroke="'+INK+'" stroke-width="3"/>'
-    + '<circle cx="84" cy="164" r="9" fill="'+skin+'" stroke="'+INK+'" stroke-width="3"/>'
-    + '<circle cx="176" cy="164" r="9" fill="'+skin+'" stroke="'+INK+'" stroke-width="3"/>';
-
-  return '<svg viewBox="0 0 260 300" width="260" height="300" xmlns="http://www.w3.org/2000/svg">'
-    + '<defs><radialGradient id="glow-'+t.key+'" cx="50%" cy="44%" r="60%">'
-    + '<stop offset="0%" stop-color="'+c+'" stop-opacity=".40"/>'
-    + '<stop offset="58%" stop-color="'+c+'" stop-opacity=".10"/>'
-    + '<stop offset="100%" stop-color="'+c+'" stop-opacity="0"/></radialGradient></defs>'
-    + '<circle cx="130" cy="142" r="108" fill="url(#glow-'+t.key+')"/>'
-    + '<ellipse cx="130" cy="292" rx="76" ry="12" fill="'+c+'" opacity=".22"/>'
-    + orbitSVG(c)
-    + '<g class="bob">'
-    + extra + body + neck + hairBack + head + hair + faceSVG(fk) + gear
-    + '</g></svg>';
-}
 
 /* =========================================================
    状态与流程
@@ -961,14 +947,16 @@ function showResult(){
   const t = TYPES[win];
   document.documentElement.style.setProperty('--accent', t.color);
   document.documentElement.style.setProperty('--glow', t.color+'66');
-  $('char-card').style.setProperty('--glow', t.color+'77');
+  $('ava-card').style.setProperty('--glow', t.color+'77');
 
   let seed = 0; S.ans.forEach((v,i)=>seed += (v+1)*(i+3)*7);
   const num = 1000 + (seed*37 % 8999);
   $('r-id').textContent = t.en.split(' ')[0] + '-' + num;
   $('fp-id').textContent = 'HZ '+(120 + seed%360)+' / '+(S.ans.length*4)+' SAMPLES';
 
-  $('avatar').innerHTML = charSVG(t);
+  document.querySelectorAll('.ava').forEach(function(el){
+    el.classList.toggle('on', el.dataset.k === t.key);
+  });
   $('r-role').textContent = t.role;
   $('r-quote').textContent = t.quote;
   $('r-en').textContent = t.en;
