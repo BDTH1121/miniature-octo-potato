@@ -25,10 +25,10 @@
   --text:#F3F6FF;
   --dim:#AEBBD9;
   --dim2:#8493B8;
-  --amber:#F5D34A;
-  --coral:#FF6A45;
-  --mint:#5FD3B4;
-  --violet:#A97BFF;
+  --amber:#F5D34A;      /* 刻度灯 */
+  --coral:#FF6A45;      /* 信号红 */
+  --mint:#5FD3B4;       /* 游标 */
+  --violet:#A97BFF;     /* 星云 */
   --accent:var(--amber);
   --radius:18px;
   --noise:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="140" height="140"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch"/></filter><rect width="140" height="140" filter="url(%23n)"/></svg>');
@@ -77,6 +77,7 @@ body{
 @keyframes tw{0%,100%{opacity:.22;transform:scale(.7)}50%{opacity:1;transform:scale(1)}}
 .star.big{box-shadow:0 0 9px 2px rgba(255,255,255,.45)}
 .meteor{position:absolute;width:170px;height:2px;opacity:0;border-radius:2px;
+  /* 头部在左（前进方向），向右渐隐为拖尾 */
   background:linear-gradient(to left,rgba(255,255,255,0) 0%,rgba(255,255,255,.18) 34%,
     rgba(255,255,255,.62) 68%,rgba(255,255,255,.96) 92%,#FFFFFF 100%);
   animation:met 8s linear infinite}
@@ -84,6 +85,7 @@ body{
   content:"";position:absolute;left:-2px;top:-2.5px;width:7px;height:7px;border-radius:50%;
   background:#fff;box-shadow:0 0 10px 3px rgba(255,255,255,.85),0 0 22px 8px rgba(160,200,255,.35);
 }
+/* 自右上方出发，向左下方划过夜空，最终坠出左边界 */
 @keyframes met{
   0%   {opacity:0;transform:translate3d(70px,-24px,0) rotate(-19deg) scaleX(.22)}
   7%   {opacity:1}
@@ -242,31 +244,35 @@ h1.title{
 .rep-head .r{text-align:right;font-size:9.5px;letter-spacing:.14em;color:var(--dim2)}
 .rep-head .r b{display:block;font-size:12px;color:var(--accent);margin-top:4px;letter-spacing:.1em}
 
-/* ============ 结尾：声音化身（圆形卡通头像） ============ */
-.ava-card{
-  position:relative;margin:24px 0 6px;padding:20px 18px 20px;border-radius:22px;overflow:hidden;
-  text-align:center;border:1px solid rgba(255,255,255,.18);
-  background:linear-gradient(165deg,#31427A,#22305A 58%,#1C2750);
-  box-shadow:0 18px 44px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.09);
+/* ============ 结尾：风格主题场景卡 ============ */
+.scene-card{
+  position:relative;margin:24px 0 6px;border-radius:22px;overflow:hidden;
+  border:1px solid rgba(255,255,255,.18);
+  box-shadow:0 18px 44px rgba(0,0,0,.36),inset 0 1px 0 rgba(255,255,255,.09);
 }
-.ava-card::before{
-  content:"";position:absolute;inset:0;pointer-events:none;
-  background:radial-gradient(72% 54% at 50% 20%,var(--glow,#F5D34A66) 0%,rgba(0,0,0,0) 72%);opacity:.75;
+.scene{display:none;width:100%;height:auto}
+.scene.on{display:block;animation:sceneIn .75s cubic-bezier(.2,.8,.2,1)}
+@keyframes sceneIn{from{opacity:0;transform:scale(1.05)}to{opacity:1;transform:none}}
+.disc{animation:spin 9s linear infinite;transform-origin:center;transform-box:fill-box}
+.disc-r{animation:spinR 13s linear infinite;transform-origin:center;transform-box:fill-box}
+@keyframes spinR{to{transform:rotate(-360deg)}}
+.scene-foot{
+  position:absolute;left:0;right:0;bottom:0;padding:30px 16px 14px;
+  background:linear-gradient(180deg,rgba(10,15,30,0) 0%,rgba(10,15,30,.55) 45%,rgba(10,15,30,.92) 100%);
+  display:flex;justify-content:space-between;align-items:flex-end;gap:12px;
 }
-.ava-kicker{position:relative;font-size:9.5px;letter-spacing:.24em;color:var(--dim2);margin-bottom:15px}
-.ava-ring{position:relative;width:136px;height:136px;margin:0 auto 15px}
-.ava-ring::after{
-  content:"";position:absolute;inset:-18px;border-radius:50%;pointer-events:none;
-  background:radial-gradient(circle,var(--glow,#F5D34A66) 0%,rgba(0,0,0,0) 66%);opacity:.5;
+.scene-foot .l{min-width:0}
+.scene-foot .lc{font-size:15px;font-weight:800;color:#fff;letter-spacing:.04em;
+  text-shadow:0 2px 10px rgba(0,0,0,.5)}
+.scene-foot .le{display:block;font-size:9.5px;letter-spacing:.22em;color:var(--accent);
+  margin-top:5px;font-weight:700}
+.scene-foot .r{font-size:11px;color:#CBD6F0;letter-spacing:.05em;text-align:right;
+  white-space:nowrap;text-shadow:0 2px 8px rgba(0,0,0,.5)}
+.scene-tag{
+  position:absolute;top:14px;left:14px;padding:5px 11px;border-radius:999px;
+  font-size:9px;letter-spacing:.2em;color:#0E1426;font-weight:800;
+  background:var(--accent);box-shadow:0 6px 16px rgba(0,0,0,.35);
 }
-.ava{width:136px;height:136px;display:none;border-radius:50%}
-.ava.on{display:block;animation:avaIn .62s cubic-bezier(.2,1.3,.4,1)}
-@keyframes avaIn{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:none}}
-.orbit-mini{animation:spin 20s linear infinite;transform-origin:60px 60px;transform-box:view-box}
-.ava-who{position:relative;font-size:11px;letter-spacing:.16em;color:var(--accent);margin-bottom:9px}
-.ava-quote{position:relative;font-size:13.5px;line-height:1.75;color:#E2E9FA;font-style:italic;padding:0 4px}
-.ava-quote::before{content:"「";opacity:.55}
-.ava-quote::after{content:"」";opacity:.55}
 
 /* 类型标题 */
 .type-box{text-align:center;margin-bottom:22px}
@@ -423,220 +429,6 @@ h1.title{
       <div class="r mono">ID<b id="r-id">---</b></div>
     </div>
 
-    <div class="ava-card" id="ava-card">
-      <div class="ava-kicker mono">YOUR SONIC AVATAR · 你的声音化身</div>
-      <div class="ava-ring">
-
-        <!-- ① 霓虹脉冲：耳机 + 挑染 -->
-        <svg class="ava" data-k="pulse" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-          <defs><clipPath id="cp-pulse"><circle cx="60" cy="60" r="58"/></clipPath>
-            <linearGradient id="bg-pulse" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#2A396F"/><stop offset="1" stop-color="#151E3E"/></linearGradient></defs>
-          <g clip-path="url(#cp-pulse)">
-            <rect width="120" height="120" fill="url(#bg-pulse)"/>
-            <circle cx="60" cy="46" r="44" fill="#3FE0D0" opacity=".16"/>
-            <g class="orbit-mini">
-              <g fill="#3FE0D0" transform="translate(60,13) rotate(8)"><circle r="3"/><rect x="2" y="-12" width="1.8" height="12" rx=".9"/><path d="M3.8 -12 q5 2.4 4 7.6 q-1.8 -4.6 -4 -5.2 z"/></g>
-              <g fill="#3FE0D0" transform="translate(105,70) rotate(-16)" opacity=".8"><circle r="3"/><rect x="2" y="-12" width="1.8" height="12" rx=".9"/><path d="M3.8 -12 q5 2.4 4 7.6 q-1.8 -4.6 -4 -5.2 z"/></g>
-              <g fill="#DCE4F6" transform="translate(15,74) rotate(20)" opacity=".7"><circle r="3"/><rect x="2" y="-12" width="1.8" height="12" rx=".9"/><path d="M3.8 -12 q5 2.4 4 7.6 q-1.8 -4.6 -4 -5.2 z"/></g>
-            </g>
-            <path d="M8 120 c0 -27 23 -41 52 -41 s52 14 52 41 z" fill="#2C3C74" stroke="#11172C" stroke-width="2.6"/>
-            <path d="M46 79 l14 16 l14 -16" fill="#1B2548" stroke="#11172C" stroke-width="2.6" stroke-linejoin="round"/>
-            <path d="M24 101 h72" stroke="#3FE0D0" stroke-width="2.4" opacity=".5"/>
-            <rect x="51" y="68" width="18" height="18" rx="4" fill="#FFD8B4" stroke="#11172C" stroke-width="2.4"/>
-            <ellipse cx="60" cy="56" rx="29" ry="33" fill="#FFD8B4" stroke="#11172C" stroke-width="2.6"/>
-            <circle cx="31" cy="60" r="6" fill="#FFD8B4" stroke="#11172C" stroke-width="2.4"/>
-            <circle cx="89" cy="60" r="6" fill="#FFD8B4" stroke="#11172C" stroke-width="2.4"/>
-            <path d="M31 56 c-2 -33 13 -49 29 -49 s31 16 29 49 l-5 -17 c-8 -11 -40 -11 -48 0 z" fill="#2E2560" stroke="#11172C" stroke-width="2.6" stroke-linejoin="round"/>
-            <path d="M40 15 q20 -9 38 -1" stroke="#3FE0D0" stroke-width="4" fill="none" stroke-linecap="round"/>
-            <path d="M33 44 q27 -23 54 0" fill="none" stroke="#232E5C" stroke-width="9" stroke-linecap="round"/>
-            <circle cx="30" cy="58" r="13" fill="#26336A" stroke="#11172C" stroke-width="2.6"/>
-            <circle cx="90" cy="58" r="13" fill="#26336A" stroke="#11172C" stroke-width="2.6"/>
-            <circle cx="30" cy="58" r="6.5" fill="#3FE0D0"/><circle cx="90" cy="58" r="6.5" fill="#3FE0D0"/>
-            <ellipse cx="49" cy="56" rx="8.4" ry="9.4" fill="#fff" stroke="#11172C" stroke-width="2.2"/>
-            <ellipse cx="71" cy="56" rx="8.4" ry="9.4" fill="#fff" stroke="#11172C" stroke-width="2.2"/>
-            <circle cx="50" cy="57" r="4" fill="#1B2246"/><circle cx="72" cy="57" r="4" fill="#1B2246"/>
-            <circle cx="51.6" cy="54.4" r="1.7" fill="#fff"/><circle cx="73.6" cy="54.4" r="1.7" fill="#fff"/>
-            <path d="M41 46 q8 -5 16 -1" stroke="#11172C" stroke-width="2.4" fill="none" stroke-linecap="round"/>
-            <path d="M79 46 q-8 -5 -16 -1" stroke="#11172C" stroke-width="2.4" fill="none" stroke-linecap="round"/>
-            <path d="M58 66 q3.5 4 6 -1" stroke="#11172C" stroke-width="2.2" fill="none" stroke-linecap="round"/>
-            <path d="M53 73 q7 6 14 0" stroke="#11172C" stroke-width="2.6" fill="none" stroke-linecap="round"/>
-            <ellipse cx="38" cy="66" rx="7.5" ry="4.4" fill="#FF8E76" opacity=".5"/>
-            <ellipse cx="82" cy="66" rx="7.5" ry="4.4" fill="#FF8E76" opacity=".5"/>
-          </g>
-          <circle cx="60" cy="60" r="57" fill="none" stroke="#3FE0D0" stroke-width="2" opacity=".8"/>
-          <circle cx="60" cy="60" r="51" fill="none" stroke="#fff" stroke-width="1" opacity=".14" stroke-dasharray="2 6"/>
-        </svg>
-
-        <!-- ② 午夜蓝调：贝雷帽 + 萨克斯 -->
-        <svg class="ava" data-k="blue" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-          <defs><clipPath id="cp-blue"><circle cx="60" cy="60" r="58"/></clipPath>
-            <linearGradient id="bg-blue" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#2D3A6E"/><stop offset="1" stop-color="#171F42"/></linearGradient></defs>
-          <g clip-path="url(#cp-blue)">
-            <rect width="120" height="120" fill="url(#bg-blue)"/>
-            <circle cx="60" cy="46" r="44" fill="#7E96FF" opacity=".18"/>
-            <g class="orbit-mini">
-              <g fill="#7E96FF" transform="translate(60,13) rotate(8)"><circle r="3"/><rect x="2" y="-12" width="1.8" height="12" rx=".9"/><path d="M3.8 -12 q5 2.4 4 7.6 q-1.8 -4.6 -4 -5.2 z"/></g>
-              <g fill="#7E96FF" transform="translate(105,70) rotate(-16)" opacity=".8"><circle r="3"/><rect x="2" y="-12" width="1.8" height="12" rx=".9"/><path d="M3.8 -12 q5 2.4 4 7.6 q-1.8 -4.6 -4 -5.2 z"/></g>
-              <g fill="#DCE4F6" transform="translate(15,74) rotate(20)" opacity=".7"><circle r="3"/><rect x="2" y="-12" width="1.8" height="12" rx=".9"/><path d="M3.8 -12 q5 2.4 4 7.6 q-1.8 -4.6 -4 -5.2 z"/></g>
-            </g>
-            <path d="M8 120 c0 -27 23 -41 52 -41 s52 14 52 41 z" fill="#46568F" stroke="#11172C" stroke-width="2.6"/>
-            <path d="M46 78 q14 15 28 0 v-9 q-14 15 -28 0 z" fill="#3A4880" stroke="#11172C" stroke-width="2.6" stroke-linejoin="round"/>
-            <rect x="51" y="68" width="18" height="18" rx="4" fill="#D9A276" stroke="#11172C" stroke-width="2.4"/>
-            <ellipse cx="60" cy="56" rx="29" ry="33" fill="#D9A276" stroke="#11172C" stroke-width="2.6"/>
-            <circle cx="31" cy="60" r="6" fill="#D9A276" stroke="#11172C" stroke-width="2.4"/>
-            <circle cx="89" cy="60" r="6" fill="#D9A276" stroke="#11172C" stroke-width="2.4"/>
-            <path d="M32 58 c-2 -32 12 -46 28 -46 s30 14 28 44 l-6 -12 c-9 -10 -34 -9 -44 3 z" fill="#2C2440" stroke="#11172C" stroke-width="2.6" stroke-linejoin="round"/>
-            <ellipse cx="64" cy="28" rx="31" ry="11" fill="#33407A" stroke="#11172C" stroke-width="2.6" transform="rotate(-9 64 28)"/>
-            <path d="M40 34 q24 12 48 -6" stroke="#11172C" stroke-width="2.2" fill="none" opacity=".4"/>
-            <circle cx="77" cy="16" r="4.2" fill="#33407A" stroke="#11172C" stroke-width="2.4"/>
-            <g stroke="#11172C" stroke-width="2.6" fill="none" stroke-linecap="round">
-              <path d="M40 57 q9 7 18 0"/><path d="M62 57 q9 7 18 0"/>
-              <path d="M41 48 q8 -5 15 -1"/><path d="M79 48 q-8 -5 -15 -1"/>
-              <path d="M58 66 q3.5 4 6 -1"/>
-              <path d="M53 73 q7 6 14 0"/></g>
-            <ellipse cx="38" cy="66" rx="7.5" ry="4.4" fill="#FF8E76" opacity=".45"/>
-            <ellipse cx="82" cy="66" rx="7.5" ry="4.4" fill="#FF8E76" opacity=".45"/>
-            <path d="M70 84 L86 108" stroke="#11172C" stroke-width="15" stroke-linecap="round"/>
-            <path d="M70 84 L86 108" stroke="#EFC06A" stroke-width="10" stroke-linecap="round"/>
-            <path d="M84 103 l12 6 l-7 14 l-12 -6 z" fill="#EFC06A" stroke="#11172C" stroke-width="2.6" stroke-linejoin="round"/>
-            <g fill="#F7D89C" stroke="#11172C" stroke-width="2"><circle cx="75" cy="93" r="3"/><circle cx="80" cy="101" r="3"/></g>
-          </g>
-          <circle cx="60" cy="60" r="57" fill="none" stroke="#7E96FF" stroke-width="2" opacity=".8"/>
-          <circle cx="60" cy="60" r="51" fill="none" stroke="#fff" stroke-width="1" opacity=".14" stroke-dasharray="2 6"/>
-        </svg>
-
-        <!-- ③ 失真棱角：莫西干 + 皮夹克 -->
-        <svg class="ava" data-k="edge" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-          <defs><clipPath id="cp-edge"><circle cx="60" cy="60" r="58"/></clipPath>
-            <linearGradient id="bg-edge" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#3A2C4E"/><stop offset="1" stop-color="#181B33"/></linearGradient></defs>
-          <g clip-path="url(#cp-edge)">
-            <rect width="120" height="120" fill="url(#bg-edge)"/>
-            <circle cx="60" cy="46" r="44" fill="#FF6A54" opacity=".18"/>
-            <g class="orbit-mini">
-              <g fill="#FF6A54" transform="translate(60,13) rotate(8)"><circle r="3"/><rect x="2" y="-12" width="1.8" height="12" rx=".9"/><path d="M3.8 -12 q5 2.4 4 7.6 q-1.8 -4.6 -4 -5.2 z"/></g>
-              <g fill="#FF6A54" transform="translate(105,70) rotate(-16)" opacity=".8"><circle r="3"/><rect x="2" y="-12" width="1.8" height="12" rx=".9"/><path d="M3.8 -12 q5 2.4 4 7.6 q-1.8 -4.6 -4 -5.2 z"/></g>
-              <g fill="#DCE4F6" transform="translate(15,74) rotate(20)" opacity=".7"><circle r="3"/><rect x="2" y="-12" width="1.8" height="12" rx=".9"/><path d="M3.8 -12 q5 2.4 4 7.6 q-1.8 -4.6 -4 -5.2 z"/></g>
-            </g>
-            <path d="M8 120 c0 -27 23 -41 52 -41 s52 14 52 41 z" fill="#252B44" stroke="#11172C" stroke-width="2.6"/>
-            <path d="M46 79 l14 17 l14 -17 l-6 -3 l-8 11 l-8 -11 z" fill="#36406A" stroke="#11172C" stroke-width="2.6" stroke-linejoin="round"/>
-            <g fill="#D3DCF2" stroke="#11172C" stroke-width="1.8"><circle cx="26" cy="98" r="2.6"/><circle cx="33" cy="108" r="2.6"/><circle cx="22" cy="112" r="2.6"/></g>
-            <rect x="51" y="68" width="18" height="18" rx="4" fill="#F6C6A0" stroke="#11172C" stroke-width="2.4"/>
-            <ellipse cx="60" cy="56" rx="29" ry="33" fill="#F6C6A0" stroke="#11172C" stroke-width="2.6"/>
-            <circle cx="31" cy="60" r="6" fill="#F6C6A0" stroke="#11172C" stroke-width="2.4"/>
-            <circle cx="89" cy="60" r="6" fill="#F6C6A0" stroke="#11172C" stroke-width="2.4"/>
-            <path d="M30 58 c-5 -34 14 -50 30 -50 s33 18 28 48 l-5 -18 c-9 -11 -39 -11 -48 0 z" fill="#241F33" stroke="#11172C" stroke-width="2.6" stroke-linejoin="round"/>
-            <path d="M50 12 q10 -18 20 0 q-10 8 -20 0 z" fill="#FF6A54" stroke="#11172C" stroke-width="2.5" stroke-linejoin="round"/>
-            <ellipse cx="49" cy="57" rx="8" ry="9" fill="#fff" stroke="#11172C" stroke-width="2.2"/>
-            <ellipse cx="71" cy="57" rx="8" ry="9" fill="#fff" stroke="#11172C" stroke-width="2.2"/>
-            <circle cx="50" cy="58" r="3.9" fill="#1B2246"/><circle cx="72" cy="58" r="3.9" fill="#1B2246"/>
-            <circle cx="51.5" cy="55.5" r="1.6" fill="#fff"/><circle cx="73.5" cy="55.5" r="1.6" fill="#fff"/>
-            <g stroke="#11172C" stroke-width="2.6" fill="none" stroke-linecap="round">
-              <path d="M40 47 l17 6"/><path d="M80 47 l-17 6"/>
-              <path d="M58 67 q3.5 4 6 -1"/><path d="M50 74 q12 8 22 -5"/></g>
-            <ellipse cx="38" cy="67" rx="7.5" ry="4.4" fill="#FF8E76" opacity=".45"/>
-            <ellipse cx="82" cy="67" rx="7.5" ry="4.4" fill="#FF8E76" opacity=".45"/>
-            <path d="M96 92 l9 10 l-6 2 l7 10" stroke="#FF6A54" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".9"/>
-          </g>
-          <circle cx="60" cy="60" r="57" fill="none" stroke="#FF6A54" stroke-width="2" opacity=".8"/>
-          <circle cx="60" cy="60" r="51" fill="none" stroke="#fff" stroke-width="1" opacity=".14" stroke-dasharray="2 6"/>
-        </svg>
-
-        <!-- ④ 旷野低语：长发 + 围巾 + 小花 -->
-        <svg class="ava" data-k="wild" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-          <defs><clipPath id="cp-wild"><circle cx="60" cy="60" r="58"/></clipPath>
-            <linearGradient id="bg-wild" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#2E4056"/><stop offset="1" stop-color="#182234"/></linearGradient></defs>
-          <g clip-path="url(#cp-wild)">
-            <rect width="120" height="120" fill="url(#bg-wild)"/>
-            <circle cx="60" cy="46" r="44" fill="#A6D96B" opacity=".16"/>
-            <g class="orbit-mini">
-              <g fill="#A6D96B" transform="translate(60,13) rotate(8)"><circle r="3"/><rect x="2" y="-12" width="1.8" height="12" rx=".9"/><path d="M3.8 -12 q5 2.4 4 7.6 q-1.8 -4.6 -4 -5.2 z"/></g>
-              <g fill="#A6D96B" transform="translate(105,70) rotate(-16)" opacity=".8"><circle r="3"/><rect x="2" y="-12" width="1.8" height="12" rx=".9"/><path d="M3.8 -12 q5 2.4 4 7.6 q-1.8 -4.6 -4 -5.2 z"/></g>
-              <g fill="#DCE4F6" transform="translate(15,74) rotate(20)" opacity=".7"><circle r="3"/><rect x="2" y="-12" width="1.8" height="12" rx=".9"/><path d="M3.8 -12 q5 2.4 4 7.6 q-1.8 -4.6 -4 -5.2 z"/></g>
-            </g>
-            <path d="M8 120 c0 -27 23 -41 52 -41 s52 14 52 41 z" fill="#7B9060" stroke="#11172C" stroke-width="2.6"/>
-            <path d="M44 78 q16 12 32 0 q6 9 0 14 q-16 10 -32 0 q-6 -5 0 -14 z" fill="#D2795A" stroke="#11172C" stroke-width="2.6" stroke-linejoin="round"/>
-            <rect x="51" y="68" width="18" height="18" rx="4" fill="#FFD2AE" stroke="#11172C" stroke-width="2.4"/>
-            <ellipse cx="60" cy="46" rx="37" ry="35" fill="#7A5236" stroke="#11172C" stroke-width="2.6"/>
-            <path d="M23 48 q-6 40 2 68 q9 -18 14 -34 z" fill="#7A5236" stroke="#11172C" stroke-width="2.6" stroke-linejoin="round"/>
-            <path d="M97 48 q6 40 -2 68 q-9 -18 -14 -34 z" fill="#7A5236" stroke="#11172C" stroke-width="2.6" stroke-linejoin="round"/>
-            <ellipse cx="60" cy="56" rx="29" ry="33" fill="#FFD2AE" stroke="#11172C" stroke-width="2.6"/>
-            <circle cx="31" cy="60" r="6" fill="#FFD2AE" stroke="#11172C" stroke-width="2.4"/>
-            <circle cx="89" cy="60" r="6" fill="#FFD2AE" stroke="#11172C" stroke-width="2.4"/>
-            <path d="M31 40 q29 -21 58 0 q-15 -15 -29 -15 q-14 0 -29 15 z" fill="#6B4630" stroke="#11172C" stroke-width="2.6" stroke-linejoin="round"/>
-            <g transform="translate(88,30)">
-              <circle cx="0" cy="0" r="4.6" fill="#F5D34A" stroke="#11172C" stroke-width="2.2"/>
-              <circle cx="9" cy="4" r="4.6" fill="#F5D34A" stroke="#11172C" stroke-width="2.2"/>
-              <circle cx="4.5" cy="-7" r="4.6" fill="#F5D34A" stroke="#11172C" stroke-width="2.2"/>
-              <circle cx="4.5" cy="-1" r="2.8" fill="#A6D96B" stroke="#11172C" stroke-width="1.8"/></g>
-            <g stroke="#11172C" stroke-width="2.6" fill="none" stroke-linecap="round">
-              <path d="M40 57 q9 -8 18 0"/><path d="M62 57 q9 -8 18 0"/>
-              <path d="M41 47 q9 -6 17 -1"/><path d="M79 47 q-9 -6 -17 -1"/>
-              <path d="M58 66 q3.5 4 6 -1"/>
-              <path d="M53 73 q7 6 14 0"/></g>
-            <ellipse cx="38" cy="66" rx="7.5" ry="4.4" fill="#FF8E76" opacity=".5"/>
-            <ellipse cx="82" cy="66" rx="7.5" ry="4.4" fill="#FF8E76" opacity=".5"/>
-          </g>
-          <circle cx="60" cy="60" r="57" fill="none" stroke="#A6D96B" stroke-width="2" opacity=".8"/>
-          <circle cx="60" cy="60" r="51" fill="none" stroke="#fff" stroke-width="1" opacity=".14" stroke-dasharray="2 6"/>
-        </svg>
-
-        <!-- ⑤ 穹顶回响：卷发 + 领结 + 小提琴 -->
-        <svg class="ava" data-k="echo" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
-          <defs><clipPath id="cp-echo"><circle cx="60" cy="60" r="58"/></clipPath>
-            <linearGradient id="bg-echo" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#3A3468"/><stop offset="1" stop-color="#1A1F42"/></linearGradient></defs>
-          <g clip-path="url(#cp-echo)">
-            <rect width="120" height="120" fill="url(#bg-echo)"/>
-            <circle cx="60" cy="46" r="44" fill="#F0C95E" opacity=".18"/>
-            <g class="orbit-mini">
-              <g fill="#F0C95E" transform="translate(60,13) rotate(8)"><circle r="3"/><rect x="2" y="-12" width="1.8" height="12" rx=".9"/><path d="M3.8 -12 q5 2.4 4 7.6 q-1.8 -4.6 -4 -5.2 z"/></g>
-              <g fill="#F0C95E" transform="translate(105,70) rotate(-16)" opacity=".8"><circle r="3"/><rect x="2" y="-12" width="1.8" height="12" rx=".9"/><path d="M3.8 -12 q5 2.4 4 7.6 q-1.8 -4.6 -4 -5.2 z"/></g>
-              <g fill="#DCE4F6" transform="translate(15,74) rotate(20)" opacity=".7"><circle r="3"/><rect x="2" y="-12" width="1.8" height="12" rx=".9"/><path d="M3.8 -12 q5 2.4 4 7.6 q-1.8 -4.6 -4 -5.2 z"/></g>
-            </g>
-            <path d="M8 120 c0 -27 23 -41 52 -41 s52 14 52 41 z" fill="#26326A" stroke="#11172C" stroke-width="2.6"/>
-            <path d="M46 79 l14 21 l14 -21 l-6 -3 l-8 13 l-8 -13 z" fill="#F2F5FC" stroke="#11172C" stroke-width="2.6" stroke-linejoin="round"/>
-            <path d="M60 78 l-9 -5 v11 z" fill="#F0C95E" stroke="#11172C" stroke-width="2.4" stroke-linejoin="round"/>
-            <path d="M60 78 l9 -5 v11 z" fill="#F0C95E" stroke="#11172C" stroke-width="2.4" stroke-linejoin="round"/>
-            <circle cx="60" cy="79" r="3" fill="#F0C95E" stroke="#11172C" stroke-width="2"/>
-            <rect x="51" y="68" width="18" height="18" rx="4" fill="#F8DCBE" stroke="#11172C" stroke-width="2.4"/>
-            <ellipse cx="60" cy="56" rx="29" ry="33" fill="#F8DCBE" stroke="#11172C" stroke-width="2.6"/>
-            <circle cx="31" cy="60" r="6" fill="#F8DCBE" stroke="#11172C" stroke-width="2.4"/>
-            <circle cx="89" cy="60" r="6" fill="#F8DCBE" stroke="#11172C" stroke-width="2.4"/>
-            <g><circle cx="40" cy="36" r="15" fill="#4A3626" stroke="#11172C" stroke-width="2.6"/>
-              <circle cx="60" cy="26" r="17" fill="#4A3626" stroke="#11172C" stroke-width="2.6"/>
-              <circle cx="80" cy="36" r="15" fill="#4A3626" stroke="#11172C" stroke-width="2.6"/>
-              <circle cx="46" cy="52" r="11" fill="#4A3626" stroke="#11172C" stroke-width="2.6"/>
-              <circle cx="74" cy="52" r="11" fill="#4A3626" stroke="#11172C" stroke-width="2.6"/>
-              <circle cx="60" cy="44" r="13" fill="#4A3626" stroke="#11172C" stroke-width="2.6"/>
-              <circle cx="40" cy="36" r="12" fill="#4A3626"/><circle cx="60" cy="26" r="14" fill="#4A3626"/>
-              <circle cx="80" cy="36" r="12" fill="#4A3626"/><circle cx="46" cy="52" r="8" fill="#4A3626"/>
-              <circle cx="74" cy="52" r="8" fill="#4A3626"/><circle cx="60" cy="44" r="10" fill="#4A3626"/></g>
-            <g stroke="#11172C" stroke-width="2.6" fill="none" stroke-linecap="round">
-              <path d="M40 57 q9 8 18 0"/><path d="M62 57 q9 8 18 0"/>
-              <path d="M41 47 q9 -7 17 -2"/><path d="M79 47 q-9 -7 -17 -2"/>
-              <path d="M58 66 q3.5 4 6 -1"/></g>
-            <ellipse cx="60" cy="74" rx="4.6" ry="5.6" fill="#A85A4A" stroke="#11172C" stroke-width="2.2"/>
-            <ellipse cx="38" cy="66" rx="7.5" ry="4.4" fill="#FF8E76" opacity=".45"/>
-            <ellipse cx="82" cy="66" rx="7.5" ry="4.4" fill="#FF8E76" opacity=".45"/>
-            <g transform="translate(88,100) rotate(-20)">
-              <ellipse cx="0" cy="0" rx="10" ry="14" fill="#9E5A32" stroke="#11172C" stroke-width="2.6"/>
-              <rect x="-2.5" y="-22" width="5" height="13" rx="1.5" fill="#5E3218" stroke="#11172C" stroke-width="2.4"/>
-              <g stroke="#F2F5FC" stroke-width="1.1" opacity=".85"><path d="M-1.5 -18 v30"/><path d="M1.5 -18 v30"/></g></g>
-            <path d="M20 84 L92 112" stroke="#EFE6D2" stroke-width="3" stroke-linecap="round"/>
-            <path d="M20 84 L92 112" stroke="#11172C" stroke-width="1" stroke-linecap="round" opacity=".3"/>
-          </g>
-          <circle cx="60" cy="60" r="57" fill="none" stroke="#F0C95E" stroke-width="2" opacity=".8"/>
-          <circle cx="60" cy="60" r="51" fill="none" stroke="#fff" stroke-width="1" opacity=".14" stroke-dasharray="2 6"/>
-        </svg>
-
-      </div>
-      <div class="ava-who mono" id="r-role">—</div>
-      <div class="ava-quote" id="r-quote">—</div>
-    </div>
     <div class="type-box">
       <div class="type-en mono" id="r-en">—</div>
       <h1 class="type-cn" id="r-cn">—</h1>
@@ -659,6 +451,205 @@ h1.title{
     <div class="btn-row">
       <button class="btn" id="btn-share">分享档案</button>
       <button class="btn ghost" id="btn-again">重新检测</button>
+    </div>
+    <div class="scene-card" id="scene-card">
+      <div class="scene-tag mono" id="r-scene-tag">SCENE</div>
+
+      <!-- ① 霓虹脉冲 · 城市夜店 -->
+      <svg class="scene" data-k="pulse" viewBox="0 0 340 170" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="sky-pulse" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#1D3E6E"/><stop offset=".5" stop-color="#13294C"/><stop offset="1" stop-color="#0A1226"/></linearGradient>
+          <linearGradient id="beam-pulse" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#3FE0D0" stop-opacity=".5"/><stop offset="1" stop-color="#3FE0D0" stop-opacity="0"/></linearGradient>
+        </defs>
+        <rect width="340" height="170" fill="url(#sky-pulse)"/>
+        <g fill="#fff"><circle cx="26" cy="20" r="1.4" opacity=".75"/><circle cx="72" cy="12" r="1" opacity=".6"/>
+          <circle cx="118" cy="24" r="1.2" opacity=".7"/><circle cx="298" cy="16" r="1.3" opacity=".75"/>
+          <circle cx="256" cy="28" r="1" opacity=".55"/><circle cx="180" cy="14" r="1.1" opacity=".6"/></g>
+        <path d="M62 -4 l26 0 l44 124 l-38 0 z" fill="url(#beam-pulse)" opacity=".55"/>
+        <path d="M158 -4 l20 0 l16 112 l-30 0 z" fill="url(#beam-pulse)" opacity=".35"/>
+        <path d="M240 -4 l22 0 l-28 116 l-26 0 z" fill="url(#beam-pulse)" opacity=".45"/>
+        <g fill="#0B1730">
+          <rect x="-2" y="84" width="36" height="88"/><rect x="36" y="62" width="28" height="110"/>
+          <rect x="66" y="96" width="30" height="76"/><rect x="98" y="72" width="24" height="100"/>
+          <rect x="124" y="100" width="34" height="72"/><rect x="160" y="78" width="22" height="94"/>
+          <rect x="184" y="92" width="28" height="80"/><rect x="214" y="66" width="28" height="106"/>
+          <rect x="244" y="98" width="30" height="74"/><rect x="276" y="80" width="24" height="92"/>
+          <rect x="302" y="90" width="40" height="82"/></g>
+        <g fill="#3FE0D0" opacity=".9">
+          <rect x="42" y="72" width="5" height="6"/><rect x="53" y="86" width="5" height="6"/>
+          <rect x="42" y="100" width="5" height="6"/><rect x="104" y="82" width="5" height="6"/>
+          <rect x="112" y="98" width="5" height="6"/><rect x="166" y="88" width="5" height="6"/>
+          <rect x="222" y="76" width="5" height="6"/><rect x="232" y="94" width="5" height="6"/>
+          <rect x="284" y="90" width="5" height="6"/><rect x="312" y="100" width="5" height="6"/></g>
+        <g fill="#F5D34A" opacity=".55"><rect x="72" y="106" width="5" height="6"/><rect x="128" y="112" width="5" height="6"/>
+          <rect x="252" y="110" width="5" height="6"/></g>
+        <rect x="188" y="84" width="56" height="20" rx="10" fill="none" stroke="#3FE0D0" stroke-width="2" opacity=".9"/>
+        <g fill="#3FE0D0" transform="translate(202,88)"><circle cx="4" cy="11" r="4"/>
+          <rect x="7" y="0" width="2.4" height="11" rx="1.2"/><path d="M9.4 0 q5 2.4 4 7.2 q-1.8 -4.4 -4 -5 z"/></g>
+        <g fill="#3FE0D0" transform="translate(220,88)" opacity=".8"><circle cx="4" cy="11" r="4"/>
+          <rect x="7" y="0" width="2.4" height="11" rx="1.2"/><path d="M9.4 0 q5 2.4 4 7.2 q-1.8 -4.4 -4 -5 z"/></g>
+        <g class="disc" transform="translate(298,42)">
+          <circle r="22" fill="#0E1A34"/><circle r="16" fill="none" stroke="rgba(255,255,255,.16)" stroke-width="1.4"/>
+          <circle r="11" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="1.4"/>
+          <circle r="6" fill="#3FE0D0"/><circle r="2" fill="#0E1A34"/></g>
+        <g fill="#3FE0D0">
+          <rect x="12" y="146" width="7" height="18" rx="2.5" opacity=".85"/><rect x="24" y="138" width="7" height="26" rx="2.5"/>
+          <rect x="36" y="150" width="7" height="14" rx="2.5" opacity=".7"/><rect x="48" y="132" width="7" height="32" rx="2.5"/>
+          <rect x="60" y="144" width="7" height="20" rx="2.5" opacity=".8"/><rect x="72" y="152" width="7" height="12" rx="2.5" opacity=".6"/>
+          <rect x="84" y="140" width="7" height="24" rx="2.5" opacity=".9"/><rect x="252" y="148" width="7" height="16" rx="2.5" opacity=".7"/>
+          <rect x="264" y="136" width="7" height="28" rx="2.5"/><rect x="276" y="146" width="7" height="18" rx="2.5" opacity=".8"/>
+          <rect x="288" y="154" width="7" height="10" rx="2.5" opacity=".55"/><rect x="300" y="140" width="7" height="24" rx="2.5" opacity=".9"/>
+          <rect x="312" y="150" width="7" height="14" rx="2.5" opacity=".65"/></g>
+      </svg>
+
+      <!-- ② 午夜蓝调 · 雨夜爵士酒吧 -->
+      <svg class="scene" data-k="blue" viewBox="0 0 340 170" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="sky-blue" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#2B3768"/><stop offset=".55" stop-color="#1A2246"/><stop offset="1" stop-color="#0D1330"/></linearGradient>
+          <linearGradient id="win-blue" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#1E2A52"/><stop offset="1" stop-color="#141C3C"/></linearGradient>
+        </defs>
+        <rect width="340" height="170" fill="url(#sky-blue)"/>
+        <rect x="34" y="14" width="272" height="104" rx="12" fill="url(#win-blue)" stroke="#4C5C96" stroke-width="2"/>
+        <g fill="#101838"><rect x="40" y="70" width="26" height="48"/><rect x="70" y="56" width="20" height="62"/>
+          <rect x="94" y="76" width="24" height="42"/><rect x="122" y="60" width="18" height="58"/>
+          <rect x="146" y="80" width="22" height="38"/><rect x="242" y="66" width="24" height="52"/>
+          <rect x="270" y="78" width="30" height="40"/></g>
+        <g fill="#7E96FF" opacity=".5"><rect x="46" y="78" width="5" height="6"/><rect x="76" y="66" width="5" height="6"/>
+          <rect x="100" y="86" width="5" height="6"/><rect x="248" y="74" width="5" height="6"/>
+          <rect x="278" y="88" width="5" height="6"/></g>
+        <g stroke="rgba(200,215,255,.32)" stroke-width="1.4" stroke-linecap="round">
+          <path d="M50 20 l-8 22"/><path d="M78 16 l-8 22"/><path d="M106 26 l-8 22"/>
+          <path d="M134 18 l-8 22"/><path d="M162 24 l-8 22"/><path d="M190 16 l-8 22"/>
+          <path d="M218 26 l-8 22"/><path d="M246 18 l-8 22"/><path d="M274 24 l-8 22"/>
+          <path d="M300 20 l-8 22"/><path d="M62 54 l-8 22"/><path d="M150 56 l-8 22"/>
+          <path d="M230 58 l-8 22"/><path d="M292 54 l-8 22"/></g>
+        <g stroke="#4C5C96" stroke-width="2"><path d="M170 14 v104"/><path d="M34 66 h272"/></g>
+        <g fill="#7E96FF" transform="translate(150,34)"><circle cx="5" cy="13" r="5"/>
+          <rect x="8.5" y="0" width="2.6" height="13" rx="1.3"/>
+          <path d="M11.1 0 q6 3 4.8 8.6 q-2.2 -5.2 -4.8 -6 z"/></g>
+        <path d="M170 0 v20" stroke="#5A6BA6" stroke-width="2"/>
+        <circle cx="170" cy="26" r="7" fill="#F5D34A" opacity=".85"/>
+        <path d="M158 34 l12 10 l12 -10" fill="#F5D34A" opacity=".25"/>
+        <rect x="0" y="126" width="340" height="44" fill="#131B3A"/>
+        <rect x="0" y="126" width="340" height="4" fill="#3A4880"/>
+        <g transform="translate(46,132)">
+          <path d="M0 0 h30 v18 a8 8 0 0 1 -8 8 h-14 a8 8 0 0 1 -8 -8 z" fill="#EEF2FB" stroke="#11172C" stroke-width="2.4"/>
+          <path d="M30 5 h7 a7 7 0 0 1 0 13 h-7" fill="none" stroke="#11172C" stroke-width="2.4"/>
+          <path d="M3 4 h24" stroke="#B9C5DE" stroke-width="2.4"/>
+          <g stroke="#C8D4EC" stroke-width="2" fill="none" stroke-linecap="round"><path d="M9 -9 q5 -7 0 -12"/><path d="M21 -9 q5 -7 0 -14"/></g></g>
+        <g transform="translate(268,96)">
+          <path d="M0 0 L-14 34" stroke="#11172C" stroke-width="15" stroke-linecap="round"/>
+          <path d="M0 0 L-14 34" stroke="#EFC06A" stroke-width="10" stroke-linecap="round"/>
+          <path d="M-16 32 l-13 6 l7 15 l13 -6 z" fill="#EFC06A" stroke="#11172C" stroke-width="2.4" stroke-linejoin="round"/>
+          <g fill="#F7D89C" stroke="#11172C" stroke-width="1.8"><circle cx="-5" cy="14" r="2.6"/><circle cx="-9" cy="24" r="2.6"/></g></g>
+      </svg>
+
+      <!-- ③ 失真棱角 · livehouse 舞台 -->
+      <svg class="scene" data-k="edge" viewBox="0 0 340 170" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="sky-edge" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#4A2135"/><stop offset=".5" stop-color="#22131F"/><stop offset="1" stop-color="#100A16"/></linearGradient>
+          <linearGradient id="beam-edge" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#FF6A54" stop-opacity=".55"/><stop offset="1" stop-color="#FF6A54" stop-opacity="0"/></linearGradient>
+        </defs>
+        <rect width="340" height="170" fill="url(#sky-edge)"/>
+        <path d="M20 18 h300" stroke="#2A2436" stroke-width="4"/>
+        <g stroke="#2A2436" stroke-width="2.5"><path d="M60 18 l18 14"/><path d="M78 18 l-18 14"/>
+          <path d="M170 18 l18 14"/><path d="M188 18 l-18 14"/>
+          <path d="M280 18 l18 14"/><path d="M298 18 l-18 14"/></g>
+        <g fill="#F5D34A"><circle cx="69" cy="36" r="5"/><circle cx="179" cy="36" r="5"/><circle cx="289" cy="36" r="5"/></g>
+        <path d="M69 40 l-16 92 l30 0 z" fill="url(#beam-edge)" opacity=".55"/>
+        <path d="M179 40 l-14 96 l28 0 z" fill="url(#beam-edge)" opacity=".4"/>
+        <path d="M289 40 l-16 92 l30 0 z" fill="url(#beam-edge)" opacity=".55"/>
+        <g fill="#1A1524" stroke="#11172C" stroke-width="2">
+          <rect x="14" y="96" width="38" height="26" rx="3"/><rect x="18" y="122" width="38" height="26" rx="3"/>
+          <rect x="288" y="96" width="38" height="26" rx="3"/><rect x="292" y="122" width="38" height="26" rx="3"/></g>
+        <g fill="#2E2738"><circle cx="33" cy="109" r="9"/><circle cx="33" cy="135" r="9"/>
+          <circle cx="307" cy="109" r="9"/><circle cx="307" cy="135" r="9"/></g>
+        <g fill="#FF6A54" opacity=".35"><circle cx="33" cy="109" r="4"/><circle cx="33" cy="135" r="4"/>
+          <circle cx="307" cy="109" r="4"/><circle cx="307" cy="135" r="4"/></g>
+        <rect x="0" y="148" width="340" height="22" fill="#1E1626"/>
+        <rect x="0" y="148" width="340" height="3" fill="#FF6A54" opacity=".5"/>
+        <g fill="#0B0810">
+          <circle cx="70" cy="140" r="9"/><circle cx="92" cy="144" r="9"/><circle cx="114" cy="138" r="9"/>
+          <circle cx="136" cy="145" r="9"/><circle cx="158" cy="139" r="9"/><circle cx="180" cy="144" r="9"/>
+          <circle cx="202" cy="138" r="9"/><circle cx="224" cy="145" r="9"/><circle cx="246" cy="140" r="9"/>
+          <circle cx="268" cy="144" r="9"/></g>
+        <g stroke="#0B0810" stroke-width="4" stroke-linecap="round">
+          <path d="M78 132 l-6 -16"/><path d="M122 130 l4 -18"/><path d="M166 131 l-5 -17"/><path d="M210 130 l6 -16"/></g>
+        <g stroke="#FF6A54" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".9">
+          <path d="M258 34 l10 16 l-7 2 l9 16"/><path d="M46 44 l7 11 l-5 1 l6 11" opacity=".6"/></g>
+      </svg>
+
+      <!-- ④ 旷野低语 · 公路与山 -->
+      <svg class="scene" data-k="wild" viewBox="0 0 340 170" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="sky-wild" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#2A4A52"/><stop offset=".55" stop-color="#1B3038"/><stop offset="1" stop-color="#131F26"/></linearGradient></defs>
+        <rect width="340" height="170" fill="url(#sky-wild)"/>
+        <g fill="#fff"><circle cx="34" cy="22" r="1.4" opacity=".8"/><circle cx="72" cy="14" r="1" opacity=".6"/>
+          <circle cx="108" cy="28" r="1.2" opacity=".7"/><circle cx="196" cy="26" r="1" opacity=".5"/>
+          <circle cx="150" cy="16" r="1.1" opacity=".6"/><circle cx="312" cy="34" r="1" opacity=".55"/></g>
+        <circle cx="266" cy="34" r="19" fill="#F5D34A" opacity=".14"/>
+        <circle cx="266" cy="34" r="12" fill="#F5D34A" opacity=".9"/>
+        <path d="M-4 118 l58 -46 l52 46 z" fill="#1E3239"/>
+        <path d="M52 120 l64 -58 l70 58 z" fill="#1B2D34"/>
+        <path d="M140 120 l56 -44 l60 44 z" fill="#1E3239"/>
+        <path d="M226 120 l52 -40 l66 40 z" fill="#1B2D34"/>
+        <path d="M-4 138 q80 -22 170 -6 q90 16 178 -2 l0 40 l-348 0 z" fill="#16262B"/>
+        <path d="M148 170 L166 96 L174 96 L192 170 z" fill="#26333D"/>
+        <path d="M170 100 L171 168" stroke="#E8DCC0" stroke-width="2.4" stroke-dasharray="8 10" opacity=".8"/>
+        <g fill="#122024">
+          <path d="M40 138 l14 -30 l14 30 z"/><path d="M44 142 l10 -20 l10 20 z"/>
+          <path d="M282 140 l13 -28 l13 28 z"/><path d="M286 144 l9 -18 l9 18 z"/></g>
+        <g transform="translate(96,150)">
+          <ellipse cx="0" cy="10" rx="20" ry="5" fill="#A6D96B" opacity=".18"/>
+          <path d="M-9 10 l3 -10 l3 -6 l4 8 l4 -9 l3 7 l3 10 z" fill="#FF8A3D"/>
+          <path d="M-4 10 l2 -6 l3 6 z" fill="#F5D34A"/></g>
+        <g transform="translate(248,140) rotate(-14)">
+          <ellipse cx="0" cy="6" rx="15" ry="19" fill="#8A5A32" stroke="#11172C" stroke-width="2"/>
+          <circle cx="0" cy="4" r="5.5" fill="#3A2418"/>
+          <rect x="-3" y="-26" width="6" height="16" rx="2" fill="#6E4426"/></g>
+        <g stroke="#A6D96B" stroke-width="2" stroke-linecap="round" opacity=".55">
+          <path d="M20 166 l4 -9"/><path d="M28 168 l-3 -8"/><path d="M312 166 l-4 -9"/><path d="M322 168 l3 -8"/></g>
+      </svg>
+
+      <!-- ⑤ 穹顶回响 · 音乐厅 -->
+      <svg class="scene" data-k="echo" viewBox="0 0 340 170" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="sky-echo" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#33356E"/><stop offset=".55" stop-color="#1D2049"/><stop offset="1" stop-color="#11132E"/></linearGradient></defs>
+        <rect width="340" height="170" fill="url(#sky-echo)"/>
+        <g fill="none" stroke="rgba(255,255,255,.13)" stroke-width="1.6">
+          <path d="M20 118 q150 -112 300 0"/><path d="M46 118 q124 -92 248 0"/><path d="M74 118 q96 -72 192 0"/></g>
+        <path d="M170 0 v16" stroke="#6A6FB0" stroke-width="2"/>
+        <circle cx="170" cy="26" r="17" fill="#F0C95E" opacity=".14"/>
+        <circle cx="170" cy="26" r="11" fill="#F0C95E" opacity=".9"/>
+        <g stroke="#F0C95E" stroke-width="1.6" opacity=".5">
+          <path d="M170 36 l-16 22"/><path d="M170 36 l-8 26"/><path d="M170 36 l8 26"/><path d="M170 36 l16 22"/></g>
+        <g fill="#1C2049"><rect x="16" y="62" width="18" height="82"/><rect x="306" y="62" width="18" height="82"/></g>
+        <g fill="#2A2E62"><rect x="12" y="54" width="26" height="8" rx="2"/><rect x="302" y="54" width="26" height="8" rx="2"/>
+          <rect x="12" y="144" width="26" height="8" rx="2"/><rect x="302" y="144" width="26" height="8" rx="2"/></g>
+        <path d="M34 62 q24 30 24 90 l-24 0 z" fill="#182048"/>
+        <path d="M306 62 q-24 30 -24 90 l24 0 z" fill="#182048"/>
+        <g fill="none" stroke="#F0C95E" stroke-width="2" opacity=".55" stroke-linecap="round">
+          <path d="M118 96 q52 -22 104 0"/><path d="M126 106 q44 -18 88 0"/><path d="M134 116 q36 -14 72 0"/></g>
+        <rect x="46" y="140" width="248" height="10" rx="3" fill="#232A5C"/>
+        <rect x="46" y="148" width="248" height="22" fill="#141838"/>
+        <g fill="#0D1030">
+          <circle cx="70" cy="152" r="7"/><circle cx="96" cy="152" r="7"/><circle cx="122" cy="152" r="7"/>
+          <circle cx="148" cy="152" r="7"/><circle cx="174" cy="152" r="7"/><circle cx="200" cy="152" r="7"/>
+          <circle cx="226" cy="152" r="7"/><circle cx="252" cy="152" r="7"/><circle cx="278" cy="152" r="7"/></g>
+        <g fill="#F0C95E" opacity=".8"><circle cx="60" cy="40" r="1.6"/><circle cx="300" cy="36" r="1.6"/>
+          <circle cx="96" cy="60" r="1.2" opacity=".6"/><circle cx="248" cy="58" r="1.2" opacity=".6"/></g>
+      </svg>
+
+      <div class="scene-foot">
+        <div class="l"><span class="lc" id="r-scene-cn">—</span><small class="le" id="r-scene-en">—</small></div>
+        <div class="r" id="r-scene-time">—</div>
+      </div>
     </div>
     <div class="foot-note" id="r-date">—</div>
   </section>
@@ -730,6 +721,15 @@ const TYPES = [
 ];
 
 const STAT_NAMES = ['节拍引力','情绪浓度','声场探索','沉浸深度','表达张力'];
+
+/* 各风格对应的场景时间刻度 */
+const SCENES = {
+  pulse:'02:40 · 城市仍在跳动',
+  blue:'23:15 · 窗外一直在下雨',
+  edge:'20:30 · 第一排，耳朵嗡嗡响',
+  wild:'17:20 · 公路尽头没有路标',
+  echo:'19:45 · 等最后一个泛音散尽'
+};
 
 /* 每题 4 个选项，ty = 对应人格索引。10 题 × 4 = 40 槽，每种人格各出现 8 次 */
 const QUESTIONS = [
@@ -833,6 +833,7 @@ const NOTE_SVG = '<svg viewBox="0 0 20 26" width="15" height="20" xmlns="http://
   }
   sky.appendChild(frag);
 
+  /* 自右侧外部出发，确保向左飞行后坠出左边界 */
   for(i=0;i<3;i++){
     const m = document.createElement('i');
     m.className = 'meteor';
@@ -938,6 +939,7 @@ function compute(){
   const sc = [0,0,0,0,0];
   S.ans.forEach(t=>sc[t]++);
   const max = Math.max(...sc);
+  // 平局时取最先达到该分数的类型
   const seen = [0,0,0,0,0]; let win = sc.indexOf(max);
   for(const t of S.ans){ seen[t]++; if(seen[t]===max){ win=t; break; } }
   return {sc, win};
@@ -947,23 +949,27 @@ function showResult(){
   const t = TYPES[win];
   document.documentElement.style.setProperty('--accent', t.color);
   document.documentElement.style.setProperty('--glow', t.color+'66');
-  $('ava-card').style.setProperty('--glow', t.color+'77');
+  $('scene-card').style.setProperty('--glow', t.color+'77');
 
+  // 编号：稳定且可复现
   let seed = 0; S.ans.forEach((v,i)=>seed += (v+1)*(i+3)*7);
   const num = 1000 + (seed*37 % 8999);
   $('r-id').textContent = t.en.split(' ')[0] + '-' + num;
   $('fp-id').textContent = 'HZ '+(120 + seed%360)+' / '+(S.ans.length*4)+' SAMPLES';
 
-  document.querySelectorAll('.ava').forEach(function(el){
+  document.querySelectorAll('.scene').forEach(function(el){
     el.classList.toggle('on', el.dataset.k === t.key);
   });
-  $('r-role').textContent = t.role;
-  $('r-quote').textContent = t.quote;
+  $('r-scene-tag').textContent = 'SCENE / ' + t.en.split(' ')[0];
+  $('r-scene-cn').textContent = t.cn;
+  $('r-scene-en').textContent = t.en;
+  $('r-scene-time').textContent = SCENES[t.key];
   $('r-en').textContent = t.en;
   $('r-cn').textContent = t.cn;
   $('r-sub').textContent = t.sub;
   $('r-desc').textContent = t.desc;
 
+  // 能力值：基础值 + 个性化微调
   const bonus = (sc[win] - 5) * 1.6;
   const stats = t.stats.map((v,i)=>{
     const jitter = ((seed >> (i*2)) % 7) - 3;
@@ -977,6 +983,7 @@ function showResult(){
   $('tags').innerHTML = t.tags.map((x,i)=>
     '<span class="tag" style="animation-delay:'+(300+i*80)+'ms"># '+x+'</span>').join('');
 
+  // 声音指纹波形
   let s = seed;
   const rnd = ()=>{ s = (s*9301 + 49297) % 233280; return s/233280; };
   let fpD = 'M0,32 ';
