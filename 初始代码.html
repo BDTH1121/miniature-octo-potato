@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#0B0F18">
+<title>声音人格检测 · NIGHT SIGNAL 深夜调频</title>
+<meta name="description" content="10 道情境题，约 60 秒。从你偏爱的声音质地，反推出你是谁：霓虹脉冲 / 午夜蓝调 / 失真棱角 / 旷野低语 / 穹顶回响。">
+<meta property="og:title" content="声音人格检测 · 你的耳朵早就替你选好了">
+<meta property="og:description" content="10 道题，生成一份可以分享的声音档案。">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="NIGHT SIGNAL 深夜调频实验室">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230E1420'/%3E%3Cpath d='M8 40 q8-22 16 0 t16 0 t16 0' stroke='%23F5D34A' stroke-width='4' fill='none' stroke-linecap='round'/%3E%3Ccircle cx='32' cy='18' r='5' fill='%23FF6A45'/%3E%3C/svg%3E">
+<style>
+/* ============ 设计令牌 · NIGHT SIGNAL 深夜调频 ============ */
+:root{
+  --ink:#080B12;
+  --bg:#0E1420;
+  --bg2:#121A29;
+  --panel:#182031;
+  --panel2:#1E283C;
+  --line:rgba(233,240,255,.10);
+  --line2:rgba(233,240,255,.06);
+  --text:#E9EEF9;
+  --dim:#8E9BB6;
+  --dim2:#5E6B85;
+  --amber:#F5D34A;      /* 刻度灯 */
+  --coral:#FF6A45;      /* 信号红 */
+  --mint:#5FD3B4;       /* 游标 */
+  --accent:var(--amber);
+  --radius:18px;
+  --noise:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="140" height="140"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch"/></filter><rect width="140" height="140" filter="url(%23n)"/></svg>');
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;height:100%}
+body{
+  background:
+    radial-gradient(120% 80% at 50% -10%, #1B2740 0%, rgba(27,39,64,0) 60%),
+    radial-gradient(90% 60% at 100% 110%, #16233A 0%, rgba(22,35,58,0) 55%),
+    var(--ink);
+  color:var(--text);
+  font-family:"PingFang SC","HarmonyOS Sans SC","Hiragino Sans GB","Microsoft YaHei",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  display:flex;align-items:center;justify-content:center;
+  min-height:100vh;min-height:100dvh;
+  overflow:hidden;
+}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:var(--noise);opacity:.05;
+}
+.mono{font-family:"SF Mono",ui-monospace,"DIN Alternate","Roboto Mono",Menlo,monospace;font-variant-numeric:tabular-nums;letter-spacing:.06em}
+
+/* ============ 手机壳 ============ */
+.phone{
+  position:relative;z-index:1;
+  width:100%;max-width:440px;
+  height:100vh;height:100dvh;max-height:940px;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,0) 220px),
+    var(--bg);
+  overflow:hidden;display:flex;flex-direction:column;
+  box-shadow:0 40px 120px rgba(0,0,0,.6);
+}
+@media(min-width:520px){ .phone{border-radius:26px;border:1px solid rgba(255,255,255,.07);height:min(100dvh - 32px,900px)} }
+.phone::after{
+  content:"";position:absolute;inset:0;pointer-events:none;z-index:5;
+  background-image:var(--noise);opacity:.045;
+}
+
+/* ============ 屏幕切换 ============ */
+.screen{
+  position:absolute;inset:0;z-index:2;
+  display:flex;flex-direction:column;
+  padding:26px 22px 30px;
+  opacity:0;transform:translateY(14px);pointer-events:none;
+  transition:opacity .42s ease,transform .42s cubic-bezier(.2,.8,.2,1);
+  overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;
+}
+.screen.on{opacity:1;transform:none;pointer-events:auto}
+.screen::-webkit-scrollbar{width:0}
+
+/* ============ 首页 ============ */
+.brand{display:flex;align-items:center;gap:8px;margin-bottom:26px}
+.brand .dot{width:7px;height:7px;border-radius:50%;background:var(--coral);box-shadow:0 0 12px var(--coral);animation:blink 1.9s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+.brand span{font-size:10.5px;letter-spacing:.22em;color:var(--dim);text-transform:uppercase}
+
+.hero{flex:1;display:flex;flex-direction:column;justify-content:center;padding-bottom:10px}
+.kicker{font-size:10.5px;letter-spacing:.24em;color:var(--amber);margin-bottom:14px}
+h1.title{
+  margin:0;font-size:36px;line-height:1.22;font-weight:800;letter-spacing:-.5px;
+  background:linear-gradient(180deg,#FFFFFF,#B9C6E0);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.title em{font-style:normal;color:var(--amber);-webkit-text-fill-color:var(--amber)}
+.sub{margin:16px 0 0;font-size:13.5px;line-height:1.85;color:var(--dim)}
+.sub b{color:var(--text);font-weight:600}
+
+/* 调频面板装饰 */
+.dial{margin:26px 0 30px;position:relative}
+.dial svg{width:100%;display:block}
+
+.meta-row{display:flex;gap:10px;margin-bottom:22px}
+.meta-chip{
+  flex:1;border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:rgba(255,255,255,.02);
+}
+.meta-chip .k{font-size:9.5px;letter-spacing:.16em;color:var(--dim2)}
+.meta-chip .v{font-size:13px;font-weight:600;margin-top:4px}
+
+/* ============ 按钮 ============ */
+.btn{
+  appearance:none;border:0;cursor:pointer;font-family:inherit;
+  width:100%;padding:17px 20px;border-radius:16px;font-size:15.5px;font-weight:700;letter-spacing:.04em;
+  background:linear-gradient(180deg,#FFDD6B,#F0C63C);color:#1A1508;
+  box-shadow:0 10px 26px rgba(240,198,60,.22),inset 0 1px 0 rgba(255,255,255,.6);
+  transition:transform .16s ease,box-shadow .16s ease,filter .16s;
+  display:flex;align-items:center;justify-content:center;gap:9px;
+}
+.btn:active{transform:translateY(2px);box-shadow:0 4px 14px rgba(240,198,60,.18)}
+.btn.ghost{
+  background:transparent;color:var(--text);border:1px solid var(--line);
+  box-shadow:none;font-weight:600;
+}
+.btn.ghost:active{background:rgba(255,255,255,.05);transform:translateY(1px)}
+.btn.mini{padding:14px 16px;font-size:14px}
+.btn-row{display:flex;gap:10px;margin-top:14px}
+.btn-row .btn{flex:1}
+
+/* ============ 进度条 ============ */
+.prog{position:relative;margin-bottom:24px}
+.prog-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:9px}
+.prog-head .ch{font-size:10.5px;letter-spacing:.2em;color:var(--dim)}
+.prog-head .pc{font-size:11px;color:var(--amber)}
+.track{position:relative;height:6px;border-radius:3px;background:rgba(255,255,255,.07);overflow:visible}
+.fill{position:absolute;left:0;top:0;bottom:0;width:0;border-radius:3px;
+  background:linear-gradient(90deg,var(--amber),#FFB03A);
+  box-shadow:0 0 14px rgba(245,211,74,.45);transition:width .45s cubic-bezier(.2,.9,.2,1)}
+.cursor{position:absolute;top:-4px;width:2px;height:14px;background:var(--mint);border-radius:2px;
+  left:0;box-shadow:0 0 10px rgba(95,211,180,.8);transition:left .45s cubic-bezier(.2,.9,.2,1)}
+.ticks{display:flex;justify-content:space-between;margin-top:7px;padding:0 1px}
+.ticks i{width:1px;height:5px;background:rgba(255,255,255,.14);display:block}
+.ticks i.done{background:var(--amber)}
+
+/* ============ 题目 ============ */
+.q-wrap{flex:1;display:flex;flex-direction:column;justify-content:center;padding:6px 0 20px}
+.q-tag{font-size:10px;letter-spacing:.24em;color:var(--dim2);margin-bottom:14px}
+.q-text{margin:0 0 26px;font-size:23px;line-height:1.6;font-weight:700;letter-spacing:-.2px}
+.opts{display:flex;flex-direction:column;gap:11px}
+.opt{
+  position:relative;display:flex;gap:13px;align-items:flex-start;
+  padding:15px 16px;border-radius:15px;cursor:pointer;
+  border:1px solid var(--line);background:rgba(255,255,255,.022);
+  transition:border-color .2s,background .2s,transform .12s ease;
+  opacity:0;transform:translateY(10px);
+  animation:optIn .42s cubic-bezier(.2,.8,.2,1) forwards;
+}
+@keyframes optIn{to{opacity:1;transform:none}}
+.opt:active{transform:scale(.988)}
+.opt .key{
+  flex:0 0 auto;width:24px;height:24px;border-radius:7px;margin-top:1px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;color:var(--dim);
+  background:rgba(255,255,255,.05);border:1px solid var(--line);
+  transition:all .2s;
+}
+.opt .txt{font-size:14.5px;line-height:1.62;color:#D8E0F0}
+.opt.sel{
+  border-color:var(--amber);background:rgba(245,211,74,.09);
+  box-shadow:0 0 0 3px rgba(245,211,74,.09);
+}
+.opt.sel .key{background:var(--amber);color:#1A1508;border-color:var(--amber)}
+.opt.sel .txt{color:#fff}
+.opt.dim{opacity:.34}
+
+/* ============ 分析页 ============ */
+#loading{align-items:center;justify-content:center;text-align:center;padding:0 30px}
+.scope{position:relative;width:150px;height:150px;margin-bottom:34px}
+.scope .ring{position:absolute;inset:0;border-radius:50%;border:1px solid rgba(255,255,255,.08)}
+.scope .ring.r2{inset:16px;border-color:rgba(255,255,255,.055)}
+.scope .ring.r3{inset:32px;border-color:rgba(255,255,255,.04)}
+.scope .sweep{position:absolute;inset:0;border-radius:50%;
+  background:conic-gradient(from 0deg,rgba(245,211,74,.55),rgba(245,211,74,0) 32%);
+  -webkit-mask:radial-gradient(circle,transparent 58%,#000 60%);
+  mask:radial-gradient(circle,transparent 58%,#000 60%);
+  animation:spin 1.15s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.scope svg{position:absolute;inset:0}
+.bars{display:flex;align-items:center;justify-content:center;gap:4px;height:52px}
+.bars i{width:4px;border-radius:2px;background:linear-gradient(180deg,var(--amber),#FF8A3D);
+  animation:bar .82s ease-in-out infinite;transform-origin:center}
+@keyframes bar{0%,100%{height:8px;opacity:.5}50%{height:44px;opacity:1}}
+.load-t{font-size:15px;font-weight:600;letter-spacing:.02em;margin-bottom:10px;min-height:22px}
+.load-s{font-size:11.5px;color:var(--dim2);letter-spacing:.14em}
+.load-pct{margin-top:26px;font-size:11px;color:var(--amber);letter-spacing:.18em}
+
+/* ============ 结果页 ============ */
+.rep-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;
+  padding-bottom:14px;border-bottom:1px solid var(--line2)}
+.rep-head .l{font-size:9.5px;letter-spacing:.2em;color:var(--dim2)}
+.rep-head .l b{display:block;color:var(--text);font-size:12.5px;letter-spacing:.06em;margin-top:4px;font-weight:700}
+.rep-head .r{text-align:right;font-size:9.5px;letter-spacing:.14em;color:var(--dim2)}
+.rep-head .r b{display:block;font-size:12px;color:var(--accent);margin-top:4px;letter-spacing:.1em}
+
+/* 角色卡 */
+.char-card{
+  position:relative;border-radius:22px;overflow:hidden;margin-bottom:20px;
+  border:1px solid var(--line);
+  background:linear-gradient(165deg,var(--panel2),var(--panel) 60%,#141B29);
+}
+.char-card::before{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(80% 62% at 50% 8%,var(--glow) 0%,rgba(0,0,0,0) 70%);
+  opacity:.55;
+}
+.char-card::after{
+  content:"";position:absolute;inset:0;background-image:var(--noise);opacity:.05;pointer-events:none;
+}
+.char-scan{position:absolute;left:0;right:0;height:26%;top:-26%;
+  background:linear-gradient(180deg,rgba(255,255,255,0),rgba(255,255,255,.055),rgba(255,255,255,0));
+  animation:scan 4.6s ease-in-out infinite;pointer-events:none}
+@keyframes scan{0%{top:-30%}55%,100%{top:105%}}
+.avatar{position:relative;display:flex;align-items:center;justify-content:center;padding:16px 0 2px}
+.avatar svg{width:100%;max-width:250px;display:block;filter:drop-shadow(0 14px 26px rgba(0,0,0,.45));animation:float 5s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+.role-line{position:relative;text-align:center;padding:0 20px 16px}
+.role-line .who{font-size:10.5px;letter-spacing:.2em;color:var(--accent);opacity:.9}
+.role-line .quote{margin-top:8px;font-size:13px;line-height:1.7;color:#CBD5E8;font-style:italic}
+.role-line .quote::before{content:"「";opacity:.5}
+.role-line .quote::after{content:"」";opacity:.5}
+
+/* 类型标题 */
+.type-box{text-align:center;margin-bottom:22px}
+.type-en{font-size:10px;letter-spacing:.34em;color:var(--dim2);margin-bottom:9px}
+.type-cn{margin:0;font-size:31px;font-weight:800;letter-spacing:.02em;
+  background:linear-gradient(180deg,#fff,var(--accent));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 4px 18px var(--glow));
+}
+.type-sub{margin-top:8px;font-size:12px;color:var(--dim);letter-spacing:.06em}
+.desc{
+  font-size:13.5px;line-height:1.95;color:#C6D0E4;margin:0 0 24px;
+  padding:16px 17px;border-radius:15px;background:rgba(255,255,255,.025);
+  border:1px solid var(--line2);border-left:2px solid var(--accent);
+}
+
+/* 能力值 */
+.sec-t{display:flex;align-items:center;gap:10px;margin-bottom:15px}
+.sec-t span{font-size:10px;letter-spacing:.22em;color:var(--dim2);white-space:nowrap}
+.sec-t i{flex:1;height:1px;background:var(--line2)}
+.stats{margin-bottom:22px}
+.stat{margin-bottom:13px}
+.stat-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:7px}
+.stat-n{font-size:12.5px;color:#D3DCEE;font-weight:600}
+.stat-v{font-size:12px;color:var(--accent)}
+.stat-bar{height:7px;border-radius:4px;background:rgba(255,255,255,.055);overflow:hidden;position:relative}
+.stat-bar i{position:absolute;left:0;top:0;bottom:0;width:0;border-radius:4px;
+  background:linear-gradient(90deg,var(--accent),#fff);opacity:.92;
+  box-shadow:0 0 12px var(--glow);
+  transition:width 1.05s cubic-bezier(.2,.9,.2,1)}
+
+/* 标签 */
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+.tag{
+  padding:7px 13px;border-radius:999px;font-size:12px;
+  border:1px solid var(--accent);color:var(--accent);
+  background:color-mix(in srgb,var(--accent) 10%,transparent);
+  opacity:0;transform:scale(.9);animation:pop .4s cubic-bezier(.2,1.4,.4,1) forwards;
+}
+@keyframes pop{to{opacity:1;transform:none}}
+
+/* 波形指纹 */
+.fp{border:1px solid var(--line2);border-radius:15px;padding:15px 16px 12px;margin-bottom:20px;
+  background:rgba(255,255,255,.02)}
+.fp-t{display:flex;justify-content:space-between;font-size:9.5px;letter-spacing:.16em;color:var(--dim2);margin-bottom:10px}
+.fp svg{width:100%;display:block}
+
+.foot-note{text-align:center;font-size:10px;color:var(--dim2);letter-spacing:.1em;margin-top:16px;line-height:1.9}
+
+/* toast */
+.toast{
+  position:absolute;left:50%;bottom:34px;transform:translate(-50%,20px);z-index:20;
+  background:rgba(12,17,27,.94);border:1px solid var(--line);color:var(--text);
+  padding:12px 18px;border-radius:12px;font-size:12.5px;opacity:0;pointer-events:none;
+  transition:all .3s cubic-bezier(.2,.9,.2,1);backdrop-filter:blur(8px);white-space:nowrap;
+}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+</style>
+</head>
+<body>
+<div class="phone">
+
+  <!-- ============ 首页 ============ -->
+  <section class="screen on" id="s-intro">
+    <div class="brand"><i class="dot"></i><span class="mono">Night Signal · Sound Lab</span></div>
+    <div class="hero">
+      <div class="kicker mono">SOUND PERSONALITY TEST / 01</div>
+      <h1 class="title">你的耳朵<br>早就替你<em>选好了</em></h1>
+      <p class="sub">10 道情境题，不考乐理，只问直觉。<br>从你偏爱的<b>声音质地</b>，反推出你这个人。<br>最后生成一份可以分享的<b>声音档案</b>。</p>
+
+      <div class="dial">
+        <svg viewBox="0 0 396 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="0.5" y="70.5" width="395" height="1" fill="#2A3448"/>
+          <g id="ticks-svg"></g>
+          <path id="wave-svg" stroke="url(#wg)" stroke-width="2" stroke-linecap="round" fill="none"/>
+          <g id="needle-svg">
+            <rect x="-1.5" y="14" width="3" height="58" rx="1.5" fill="#FF6A45"/>
+            <circle cx="0" cy="12" r="4.5" fill="#FF6A45"/>
+          </g>
+          <defs>
+            <linearGradient id="wg" x1="0" y1="0" x2="396" y2="0">
+              <stop stop-color="#5FD3B4"/><stop offset="0.5" stop-color="#F5D34A"/><stop offset="1" stop-color="#FF6A45"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+
+      <div class="meta-row">
+        <div class="meta-chip"><div class="k mono">QUESTIONS</div><div class="v mono">10 题</div></div>
+        <div class="meta-chip"><div class="k mono">TIME COST</div><div class="v mono">约 60 秒</div></div>
+        <div class="meta-chip"><div class="k mono">OUTCOMES</div><div class="v mono">5 种人格</div></div>
+      </div>
+    </div>
+    <button class="btn" id="btn-start">开始检测 <span class="mono">→</span></button>
+    <div class="foot-note">NIGHT SIGNAL · 深夜调频实验室<br>结果仅代表此刻的你</div>
+  </section>
+
+  <!-- ============ 答题 ============ -->
+  <section class="screen" id="s-quiz">
+    <div class="brand"><i class="dot"></i><span class="mono">Calibrating</span></div>
+    <div class="prog">
+      <div class="prog-head">
+        <div class="ch mono" id="p-ch">CH.01 / 10</div>
+        <div class="pc mono" id="p-pc">0%</div>
+      </div>
+      <div class="track"><div class="fill" id="p-fill"></div><div class="cursor" id="p-cur"></div></div>
+      <div class="ticks" id="p-ticks"></div>
+    </div>
+    <div class="q-wrap">
+      <div class="q-tag mono" id="q-tag">SCENE 01</div>
+      <h2 class="q-text" id="q-text"></h2>
+      <div class="opts" id="opts"></div>
+    </div>
+  </section>
+
+  <!-- ============ 分析 ============ -->
+  <section class="screen" id="s-load">
+    <div class="scope">
+      <div class="ring"></div><div class="ring r2"></div><div class="ring r3"></div>
+      <div class="sweep"></div>
+      <svg viewBox="0 0 150 150">
+        <circle cx="75" cy="75" r="52" stroke="rgba(245,211,74,.22)" stroke-width="1" stroke-dasharray="3 6" fill="none"/>
+        <circle cx="75" cy="75" r="34" stroke="rgba(95,211,180,.18)" stroke-width="1" fill="none"/>
+      </svg>
+      <div class="bars" id="bars" style="position:absolute;inset:0;align-items:center;justify-content:center"></div>
+    </div>
+    <div class="load-t" id="load-t">校准频段…</div>
+    <div class="load-s mono">ANALYSING YOUR SONIC GENES</div>
+    <div class="load-pct mono" id="load-pct">0%</div>
+  </section>
+
+  <!-- ============ 结果 ============ -->
+  <section class="screen" id="s-res">
+    <div class="rep-head">
+      <div class="l mono">SOUND PROFILE REPORT<b>声音人格检测报告</b></div>
+      <div class="r mono">ID<b id="r-id">---</b></div>
+    </div>
+
+    <div class="char-card" id="char-card">
+      <div class="char-scan"></div>
+      <div class="avatar" id="avatar"></div>
+      <div class="role-line">
+        <div class="who mono" id="r-role">—</div>
+        <div class="quote" id="r-quote">—</div>
+      </div>
+    </div>
+
+    <div class="type-box">
+      <div class="type-en mono" id="r-en">—</div>
+      <h1 class="type-cn" id="r-cn">—</h1>
+      <div class="type-sub" id="r-sub">—</div>
+    </div>
+
+    <p class="desc" id="r-desc">—</p>
+
+    <div class="sec-t"><span class="mono">ABILITY INDEX</span><i></i><span class="mono" style="letter-spacing:.06em">5 项</span></div>
+    <div class="stats" id="stats"></div>
+
+    <div class="sec-t"><span class="mono">KEYWORDS</span><i></i></div>
+    <div class="tags" id="tags"></div>
+
+    <div class="fp">
+      <div class="fp-t"><span class="mono">SOUND FINGERPRINT</span><span class="mono" id="fp-id">—</span></div>
+      <svg viewBox="0 0 340 64" fill="none" id="fp-svg"></svg>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn" id="btn-share">分享档案</button>
+      <button class="btn ghost" id="btn-again">重新检测</button>
+    </div>
+    <div class="foot-note" id="r-date">—</div>
+  </section>
+
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+/* =========================================================
+   数据层：5 种声音人格 + 10 道题
+   ========================================================= */
+const TYPES = [
+  {
+    key:'pulse', cn:'霓虹脉冲', en:'NEON PULSE', color:'#3FE0D0',
+    sub:'被节拍驱动的人',
+    role:'夜航频道 DJ · 代号 PULSE',
+    quote:'先别说话，让底鼓替你回答。',
+    desc:'你的身体比大脑更早做出反应。节奏一落地，情绪就跟着起跳——你偏爱那种能被预判、又能被不断堆叠的结构，喜欢在重复的动机里等一个突然的爆破。人群、灯光、凌晨三点的便利店日光灯，都是你的共鸣箱。你不是没有耐心，只是把耐心都留给了那 4 拍之后的第 5 拍。',
+    stats:[96,64,88,68,76],
+    tags:['合成器','凌晨三点','循环动机','高 BPM','光污染','身体先行']
+  },
+  {
+    key:'blue', cn:'午夜蓝调', en:'MIDNIGHT BLUE', color:'#7E96FF',
+    sub:'把错音也当成句子的人',
+    role:'凌晨三点的萨克斯手 · 老 LU',
+    quote:'错音也是句子，我留着它。',
+    desc:'你相信"没被打磨过的部分"才是真的。比起精确到毫秒的完美，你更容易被一次即兴的迟疑、一声沙哑的换气打动。你不急着下结论，习惯把话说一半，剩下的留给听的人自己补。你的浪漫带着旧磁带的底噪——不清晰，但很诚实。',
+    stats:[58,94,66,86,62],
+    tags:['即兴','旧磁带','雨夜','半音','微醺','留白']
+  },
+  {
+    key:'edge', cn:'失真棱角', en:'DISTORTED EDGE', color:'#FF5A4D',
+    sub:'坚持声音要有毛边的人',
+    role:'车库乐队主唱 · 阿棘',
+    quote:'太干净的东西，通常不诚实。',
+    desc:'你对"被修饰过"的东西有本能的警惕。你需要听到摩擦、呼吸、过载那一瞬间的破裂——粗糙对你来说不是缺陷，是证据。你表达直接，行动快，宁可把话说得刺耳，也不愿意绕着弯让人误会。你身上那点反骨，其实是很强的诚实。',
+    stats:[80,88,74,52,97],
+    tags:['失真','反拍','现场感','噪音墙','反骨','过载']
+  },
+  {
+    key:'wild', cn:'旷野低语', en:'WILD WHISPER', color:'#9CCB63',
+    sub:'把没说完的话留在第二段的人',
+    role:'公路民谣旅人 · 小野',
+    quote:'我把没说完的话，都留在第二段。',
+    desc:'你的声音里有一种"走着路说话"的节奏——不催促，也不表演。你偏爱能听见手指擦弦、能听见房间回声的那种质地，对宏大叙事保持距离，却会为一句话里的某个细节记很久。你温和，但不软：你的坚持藏在很长的句子里，只有认真听的人才能接住。',
+    stats:[52,78,62,92,66],
+    tags:['木吉他','长途公路','低语','手写歌词','苔藓绿','呼吸感']
+  },
+  {
+    key:'echo', cn:'穹顶回响', en:'VAULTED ECHO', color:'#E7C15A',
+    sub:'愿意为一个泛音等很久的人',
+    role:'音乐厅第二小提琴 · 林度',
+    quote:'把音量关小一点，你会听见更多。',
+    desc:'你有把一件事听完的能力。在别人已经开始切歌的年纪，你还在等那个泛音散尽。你重视结构、层次和彼此让位的关系，相信每个声部都应该待在它该在的位置上——包括你自己。这份克制不是冷淡，是你对"完整"的敬意。',
+    stats:[62,80,72,98,70],
+    tags:['弦乐','空间感','长句','仪式感','泛音','完整听完']
+  }
+];
+
+const STAT_NAMES = ['节拍引力','情绪浓度','声场探索','沉浸深度','表达张力'];
+
+/* 每题 4 个选项，ty = 对应人格索引。10 题 × 4 = 40 槽，每种人格各出现 8 次 */
+const QUESTIONS = [
+  {q:'周五晚上十点，你最可能出现在哪里？', a:[
+    {t:'舞池中央，灯光一下一下打在脸上', ty:0},
+    {t:'街角小酒馆，全场只有六张桌子', ty:1},
+    {t:'livehouse 第一排，耳朵嗡嗡响', ty:2},
+    {t:'湖边，裹着毯子看星星', ty:3}
+  ]},
+  {q:'形容一下你理想中的声音质地', a:[
+    {t:'沙哑、松弛，像一盘旧磁带', ty:1},
+    {t:'粗糙、带毛边，会割手', ty:2},
+    {t:'木质、温润，能听见手指擦过琴弦', ty:3},
+    {t:'干净、饱满，带着空间的回响', ty:4}
+  ]},
+  {q:'一首歌的哪个瞬间，会让你决定收藏它？', a:[
+    {t:'第二段主歌突然安静下来的那两秒', ty:3},
+    {t:'副歌里弦乐铺开的那一层', ty:4},
+    {t:'间奏中那个一直在循环的合成器动机', ty:0},
+    {t:'前奏前三秒，鼓点直接炸开', ty:2}
+  ]},
+  {q:'你做事（或创作）的习惯更接近', a:[
+    {t:'想到什么先记在便签上，慢慢磨', ty:3},
+    {t:'反复调整结构，直到每个部分各就各位', ty:4},
+    {t:'边做边改，推倒重来是常态', ty:0},
+    {t:'即兴就好，第一遍往往最对', ty:1}
+  ]},
+  {q:'朋友说你最像哪一种天气？', a:[
+    {t:'一场正在酝酿、还没落下来的雷雨', ty:4},
+    {t:'深夜便利店的日光灯，亮得过分', ty:0},
+    {t:'阴天下午，窗外一直在下雨', ty:1},
+    {t:'突然刮起的阵风，说停就停', ty:2}
+  ]},
+  {q:'你偏爱的节奏是', a:[
+    {t:'稳定到可以预判的 4/4 推进', ty:0},
+    {t:'摇曳的、故意拖后半拍的律动', ty:1},
+    {t:'忽快忽慢，还会突然停顿的那种', ty:2},
+    {t:'像走路一样，带自然呼吸感的', ty:3}
+  ]},
+  {q:'一个人待着时，你最常做的事', a:[
+    {t:'煮一壶咖啡，看窗外发很久的呆', ty:1},
+    {t:'把音量开到最大，用力甩一会儿头', ty:2},
+    {t:'写点没人看的东西', ty:3},
+    {t:'完整听完一张专辑，中间不做别的', ty:4}
+  ]},
+  {q:'如果声音有颜色，你的是', a:[
+    {t:'烧红的铁', ty:2},
+    {t:'晒干的草和潮湿的苔藓', ty:3},
+    {t:'教堂彩窗透过来的那束光', ty:4},
+    {t:'屏幕熄灭后，视网膜上那道残影', ty:0}
+  ]},
+  {q:'一段旋律在你脑子里赖着不走，你会', a:[
+    {t:'哼出来，用手机随手录下', ty:3},
+    {t:'查清楚它出自哪首曲子、谁写的', ty:4},
+    {t:'打开软件，把它做成一个 loop', ty:0},
+    {t:'在琴键上跟着摸一遍，摸到哪儿算哪儿', ty:1}
+  ]},
+  {q:'十年后，你希望别人怎么形容你？', a:[
+    {t:'敢说敢做，从不藏着', ty:2},
+    {t:'真诚，从不修饰自己', ty:1},
+    {t:'有分量，而且耐听', ty:4},
+    {t:'永远在更新的那一版', ty:0}
+  ]}
+];
+
+const KEYS = ['A','B','C','D'];
+
+/* =========================================================
+   卡通角色（纯手绘 SVG）
+   ========================================================= */
+const INK = '#0A0E16';
+function charSVG(t){
+  const c = t.color;
+  const skin = t.key==='blue' ? '#C9946A' : (t.key==='edge' ? '#EFBE97' : '#F6C9A4');
+  const blush = '#FF8E7A';
+  const parts = [];
+
+  const glow = `<radialGradient id="g-${t.key}" cx="50%" cy="42%" r="62%">
+      <stop offset="0%" stop-color="${c}" stop-opacity=".42"/>
+      <stop offset="60%" stop-color="${c}" stop-opacity=".10"/>
+      <stop offset="100%" stop-color="${c}" stop-opacity="0"/></radialGradient>`;
+
+  /* 背景声波弧 */
+  const arcs = `<g stroke="${c}" fill="none" stroke-linecap="round">
+      <path d="M40 118 q22 -34 44 0 t44 0 t44 0" opacity=".12" stroke-width="2"/>
+      <path d="M30 106 q24 -44 48 -4 t48 8 t48 -8" opacity=".09" stroke-width="2"/>
+      <path d="M50 156 q20 26 40 0 t40 0 t40 0" opacity=".08" stroke-width="2"/></g>`;
+
+  /* 通用：躯干 + 脖子 + 头 + 耳 */
+  const neck = `<path d="M118 188 h24 v26 h-24 z" fill="${skin}" stroke="${INK}" stroke-width="3"/>`;
+  const head = `<ellipse cx="130" cy="152" rx="44" ry="50" fill="${skin}" stroke="${INK}" stroke-width="3"/>
+      <circle cx="86" cy="156" r="8" fill="${skin}" stroke="${INK}" stroke-width="3"/>
+      <circle cx="174" cy="156" r="8" fill="${skin}" stroke="${INK}" stroke-width="3"/>`;
+  const blushG = `<g opacity=".55"><ellipse cx="104" cy="168" rx="10" ry="6" fill="${blush}"/><ellipse cx="156" cy="168" rx="10" ry="6" fill="${blush}"/></g>`;
+
+  let body='', hair='', face='', gear='', extra='';
+
+  if(t.key==='pulse'){
+    body = `<path d="M60 280 c0 -46 30 -66 70 -66 c40 0 70 20 70 66 z" fill="#1B2233" stroke="${INK}" stroke-width="3"/>
+      <path d="M104 214 l26 30 l26 -30" fill="#111725" stroke="${INK}" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M130 244 v36" stroke="${c}" stroke-width="3" opacity=".9"/>
+      <path d="M78 262 h104" stroke="${c}" stroke-width="2" opacity=".5"/>
+      <circle cx="130" cy="266" r="7" fill="none" stroke="${c}" stroke-width="2.5" opacity=".8"/>`;
+    hair = `<path d="M84 146 c-6 -48 16 -72 46 -72 c30 0 52 24 46 72 l-6 -30 c-14 -18 -66 -18 -80 0 z" fill="#241E38" stroke="${INK}" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M104 84 q22 -14 44 -2" stroke="${c}" stroke-width="5" stroke-linecap="round" fill="none"/>`;
+    face = `<g stroke="${INK}" stroke-width="3" stroke-linecap="round" fill="none">
+        <path d="M100 138 l16 -5"/><path d="M160 133 l-16 -5"/>
+        <path d="M120 182 q10 8 20 0"/><path d="M126 164 q5 5 9 0"/></g>`;
+    gear = `<!-- 耳机 -->
+      <path d="M82 118 q48 -44 96 0" stroke="#151B2A" stroke-width="13" fill="none" stroke-linecap="round"/>
+      <path d="M82 118 q48 -44 96 0" stroke="${INK}" stroke-width="3" fill="none" stroke-linecap="round" opacity=".35"/>
+      <rect x="62" y="120" width="28" height="46" rx="14" fill="#1B2233" stroke="${INK}" stroke-width="3"/>
+      <rect x="170" y="120" width="28" height="46" rx="14" fill="#1B2233" stroke="${INK}" stroke-width="3"/>
+      <rect x="69" y="130" width="14" height="26" rx="7" fill="${c}" opacity=".95"/>
+      <rect x="177" y="130" width="14" height="26" rx="7" fill="${c}" opacity=".95"/>
+      <!-- LED 眼镜 -->
+      <rect x="92" y="140" width="76" height="15" rx="7.5" fill="#0C1220" stroke="${INK}" stroke-width="3"/>
+      <g fill="${c}"><rect x="100" y="145" width="6" height="5" rx="1.5"/><rect x="112" y="145" width="6" height="5" rx="1.5"/>
+      <rect x="142" y="145" width="6" height="5" rx="1.5"/><rect x="154" y="145" width="6" height="5" rx="1.5"/></g>`;
+    extra = `<g opacity=".9"><path d="M212 96 l0 -18" stroke="${c}" stroke-width="3" stroke-linecap="round"/>
+      <path d="M206 74 q6 -10 12 0 q-6 6 -12 0" fill="${c}"/>
+      <path d="M46 214 l0 -22" stroke="${c}" stroke-width="3" stroke-linecap="round" opacity=".6"/>
+      <path d="M40 186 q6 -10 12 0 q-6 6 -12 0" fill="${c}" opacity=".6"/></g>`;
+  }
+
+  if(t.key==='blue'){
+    body = `<path d="M60 280 c0 -46 30 -66 70 -66 c40 0 70 20 70 66 z" fill="#37436E" stroke="${INK}" stroke-width="3"/>
+      <path d="M104 216 q26 26 52 0 l0 -12 q-26 26 -52 0 z" fill="#2B3557" stroke="${INK}" stroke-width="3"/>
+      <path d="M110 216 v-8 h40 v8" fill="none" stroke="${INK}" stroke-width="3"/>`;
+    hair = `<path d="M84 148 c-4 -44 18 -66 46 -66 c24 0 44 16 48 44 l-10 -14 c-16 -14 -56 -12 -70 4 z" fill="#241D2C" stroke="${INK}" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M176 126 q10 12 6 30" stroke="#241D2C" stroke-width="9" fill="none" stroke-linecap="round"/>`;
+    face = `<g stroke="${INK}" stroke-width="3" stroke-linecap="round" fill="none">
+        <path d="M102 136 q9 -6 18 -1"/><path d="M158 135 q-9 -6 -18 -1"/>
+        <path d="M106 152 q11 7 22 0"/><path d="M152 152 q-11 7 -22 0"/>
+        <path d="M124 180 q7 7 14 0"/><path d="M127 163 q5 5 9 0"/></g>`;
+    gear = `<!-- 贝雷帽 -->
+      <ellipse cx="136" cy="98" rx="54" ry="20" fill="#2C3560" stroke="${INK}" stroke-width="3" transform="rotate(-9 136 98)"/>
+      <path d="M100 106 q36 18 74 -6" stroke="${INK}" stroke-width="3" fill="none" opacity=".5"/>
+      <circle cx="152" cy="76" r="6" fill="#2C3560" stroke="${INK}" stroke-width="3"/>
+      <!-- 萨克斯 -->
+      <path d="M138 184 L176 236" stroke="#0A0E16" stroke-width="20" stroke-linecap="round"/>
+      <path d="M138 184 L176 236" stroke="#E5B25A" stroke-width="14" stroke-linecap="round"/>
+      <g fill="#E5B25A" stroke="${INK}" stroke-width="3">
+        <ellipse cx="188" cy="248" rx="24" ry="17" transform="rotate(-38 188 248)"/></g>
+      <ellipse cx="192" cy="247" rx="12" ry="8" transform="rotate(-38 192 247)" fill="#B98434" stroke="${INK}" stroke-width="2.5"/>
+      <g fill="#F3D089" stroke="${INK}" stroke-width="2.5"><circle cx="150" cy="202" r="4"/><circle cx="160" cy="216" r="4"/><circle cx="170" cy="230" r="4"/></g>`;
+    extra = `<!-- 咖啡杯 -->
+      <g transform="translate(24,212)">
+        <path d="M0 0 h30 v26 a8 8 0 0 1 -8 8 h-14 a8 8 0 0 1 -8 -8 z" fill="#E9EEF9" stroke="${INK}" stroke-width="3"/>
+        <path d="M30 5 h8 a7 7 0 0 1 0 14 h-8" fill="none" stroke="${INK}" stroke-width="3"/>
+        <path d="M4 4 h22" stroke="#C0CADF" stroke-width="3"/>
+        <path d="M10 -12 q5 -8 0 -14" stroke="#C0CADF" stroke-width="2.5" fill="none" opacity=".7"/>
+        <path d="M22 -12 q5 -8 0 -16" stroke="#C0CADF" stroke-width="2.5" fill="none" opacity=".5"/></g>`;
+  }
+
+  if(t.key==='edge'){
+    body = `<path d="M60 280 c0 -46 30 -66 70 -66 c40 0 70 20 70 66 z" fill="#1A1C25" stroke="${INK}" stroke-width="3"/>
+      <path d="M104 214 l26 34 l26 -34 l-12 -6 l-14 18 l-14 -18 z" fill="#262935" stroke="${INK}" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M130 248 v32" stroke="#C9D2E4" stroke-width="2.5"/>
+      <circle cx="130" cy="262" r="4" fill="#C9D2E4" stroke="${INK}" stroke-width="2"/>
+      <g fill="#C9D2E4" stroke="${INK}" stroke-width="2"><circle cx="88" cy="244" r="3.5"/><circle cx="96" cy="258" r="3.5"/><circle cx="84" cy="270" r="3.5"/></g>
+      <circle cx="168" cy="234" r="6" fill="${t.color}" stroke="${INK}" stroke-width="2.5"/>`;
+    hair = `<path d="M82 150 c-8 -46 18 -74 48 -74 c30 0 56 28 48 74 l-8 -32 c-14 -16 -66 -16 -80 0 z" fill="#1E1B24" stroke="${INK}" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M114 78 q16 -26 32 0 q-16 10 -32 0 z" fill="${t.color}" stroke="${INK}" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M96 104 l-14 -10" stroke="#1E1B24" stroke-width="6" stroke-linecap="round"/>
+      <path d="M166 106 l14 -12" stroke="#1E1B24" stroke-width="6" stroke-linecap="round"/>`;
+    face = `<g stroke="${INK}" stroke-width="3" stroke-linecap="round" fill="none">
+        <path d="M98 132 l20 6"/><path d="M162 132 l-20 6"/>
+        <path d="M104 154 q11 6 22 -2"/><path d="M156 154 q-11 6 -22 -2"/>
+        <path d="M112 182 q18 10 30 -6"/></g>
+      <g fill="${INK}"><circle cx="112" cy="150" r="4"/><circle cx="150" cy="150" r="4"/></g>`;
+    gear = `<!-- 电吉他 -->
+      <g transform="rotate(-34 166 226)">
+        <rect x="150" y="200" width="12" height="26" rx="3" fill="#8A5A32" stroke="${INK}" stroke-width="3"/>
+        <path d="M156 214 c-16 -4 -24 4 -24 16 c0 14 12 22 24 20 c12 -2 24 6 24 20 c0 12 -8 20 -24 16 c16 4 24 -4 24 -16 c0 -14 -12 -22 -24 -20 c-12 2 -24 -6 -24 -20 c0 -12 8 -20 24 -16 z"
+          fill="${t.color}" stroke="${INK}" stroke-width="3" stroke-linejoin="round"/>
+        <rect x="146" y="232" width="20" height="9" rx="2" fill="#2A2D38" stroke="${INK}" stroke-width="2.5"/>
+      </g>
+      <g stroke="#E9EEF9" stroke-width="1.4" opacity=".8">
+        <path d="M182 258 L206 236"/><path d="M184 262 L208 240"/></g>
+      <circle cx="176" cy="156" r="3.5" fill="#C9D2E4" stroke="${INK}" stroke-width="2"/>`;
+    extra = `<g opacity=".85"><path d="M196 96 l14 12 l-14 12" stroke="${t.color}" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M50 108 l-14 12 l14 12" stroke="${t.color}" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".6"/></g>`;
+  }
+
+  if(t.key==='wild'){
+    body = `<path d="M60 280 c0 -46 30 -66 70 -66 c40 0 70 20 70 66 z" fill="#7E8C63" stroke="${INK}" stroke-width="3"/>
+      <path d="M104 214 l26 30 l26 -30" fill="#E4D9BE" stroke="${INK}" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M130 244 v36" stroke="#7E8C63" stroke-width="3"/>
+      <circle cx="130" cy="264" r="4" fill="#C9B98F" stroke="${INK}" stroke-width="2"/>
+      <!-- 围巾 -->
+      <path d="M100 212 q30 20 60 0 q6 12 -2 18 q-28 16 -56 0 q-8 -6 -2 -18 z" fill="#C96A4B" stroke="${INK}" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M158 228 q12 14 8 34 l-14 -6 q4 -18 -6 -26 z" fill="#C96A4B" stroke="${INK}" stroke-width="3" stroke-linejoin="round"/>`;
+    hair = `<path d="M84 150 c-8 -46 18 -76 46 -76 c30 0 54 30 46 74 l6 78 c10 -30 8 -56 4 -74 l-8 -32 c-14 -18 -68 -18 -84 0 l-4 32 c-6 18 -8 44 -2 74 z"
+        fill="#6B4A32" stroke="${INK}" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M92 112 q30 -22 62 -4 q-16 26 -62 4 z" fill="#7C573B" stroke="${INK}" stroke-width="3"/>
+      <!-- 发侧小花 -->
+      <g transform="translate(184,112)"><circle cx="0" cy="0" r="5" fill="#F5D34A" stroke="${INK}" stroke-width="2.5"/>
+        <circle cx="10" cy="5" r="5" fill="#F5D34A" stroke="${INK}" stroke-width="2.5"/>
+        <circle cx="5" cy="-7" r="5" fill="#F5D34A" stroke="${INK}" stroke-width="2.5"/>
+        <circle cx="5" cy="-1" r="3" fill="${t.color}" stroke="${INK}" stroke-width="2"/></g>`;
+    face = `<g stroke="${INK}" stroke-width="3" stroke-linecap="round" fill="none">
+        <path d="M104 150 q12 -11 24 0"/><path d="M156 150 q-12 -11 -24 0"/>
+        <path d="M122 180 q9 8 18 0"/><path d="M127 164 q5 5 9 0"/></g>`;
+    gear = `<!-- 木吉他 -->
+      <g transform="translate(196,214) rotate(14)">
+        <path d="M0 -46 c16 0 24 12 22 24 c-2 11 2 18 2 26 c0 16 -10 26 -24 26 c-14 0 -24 -10 -24 -26 c0 -8 4 -15 2 -26 c-2 -12 6 -24 22 -24 z"
+          fill="#C98A4B" stroke="${INK}" stroke-width="3" stroke-linejoin="round"/>
+        <circle cx="-1" cy="4" r="10" fill="#3A2418" stroke="${INK}" stroke-width="2.5"/>
+        <rect x="-11" y="24" width="20" height="6" rx="2" fill="#8A5A32" stroke="${INK}" stroke-width="2.5"/>
+        <rect x="-6" y="-64" width="12" height="22" rx="2" fill="#8A5A32" stroke="${INK}" stroke-width="3"/>
+        <g stroke="#E9EEF9" stroke-width="1.3" opacity=".75"><path d="M-3 -30 v56"/><path d="M1 -30 v56"/></g>
+      </g>`;
+    extra = `<g opacity=".8"><path d="M52 172 q-10 -14 2 -22" stroke="${t.color}" stroke-width="3" fill="none" stroke-linecap="round"/>
+      <path d="M46 150 q-8 -6 -2 -14 q8 0 10 8 z" fill="${t.color}" stroke="${INK}" stroke-width="2.5"/></g>`;
+  }
+
+  if(t.key==='echo'){
+    body = `<path d="M60 280 c0 -46 30 -66 70 -66 c40 0 70 20 70 66 z" fill="#171C2B" stroke="${INK}" stroke-width="3"/>
+      <path d="M104 214 l26 40 l26 -40 l-10 -4 l-16 24 l-16 -24 z" fill="#EDEFF5" stroke="${INK}" stroke-width="3" stroke-linejoin="round"/>
+      <!-- 领结 -->
+      <g><path d="M130 220 l-16 -8 v18 z" fill="${t.color}" stroke="${INK}" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M130 220 l16 -8 v18 z" fill="${t.color}" stroke="${INK}" stroke-width="3" stroke-linejoin="round"/>
+        <circle cx="130" cy="221" r="4.5" fill="${t.color}" stroke="${INK}" stroke-width="3"/></g>`;
+    /* 卷发：先描边层，再填充层遮住内部线 */
+    const curls = [[92,110,24],[130,92,27],[168,110,24],[104,132,17],[156,132,17],[130,116,20]];
+    hair = `<g>${curls.map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="${p[2]+3}" fill="#43301F" stroke="${INK}" stroke-width="3"/>`).join('')}
+        ${curls.map(p=>`<circle cx="${p[0]}" cy="${p[1]}" r="${p[2]}" fill="#43301F"/>`).join('')}</g>
+      <path d="M96 128 q10 12 4 26" stroke="#2E2115" stroke-width="4" fill="none" stroke-linecap="round" opacity=".6"/>`;
+    face = `<g stroke="${INK}" stroke-width="3" stroke-linecap="round" fill="none">
+        <path d="M100 136 q12 -8 22 -2"/><path d="M160 136 q-12 -8 -22 -2"/>
+        <path d="M104 156 q12 8 24 0"/><path d="M152 156 q-12 8 -24 0"/>
+        <path d="M126 164 q5 5 9 0"/></g>
+      <ellipse cx="131" cy="182" rx="6" ry="7.5" fill="#8E4A3C" stroke="${INK}" stroke-width="2.5"/>`;
+    gear = `<!-- 小提琴 -->
+      <g transform="translate(76,236) rotate(-22)">
+        <path d="M0 -34 c12 0 18 9 17 18 c-1 8 2 13 2 19 c0 12 -8 19 -19 19 c-11 0 -19 -7 -19 -19 c0 -6 3 -11 2 -19 c-1 -9 5 -18 17 -18 z"
+          fill="#8A4B2A" stroke="${INK}" stroke-width="3" stroke-linejoin="round"/>
+        <rect x="-5" y="-52" width="10" height="22" rx="2" fill="#5E3218" stroke="${INK}" stroke-width="3"/>
+        <path d="M-8 -4 q-4 10 0 20" stroke="#2B1409" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <path d="M8 -4 q4 10 0 20" stroke="#2B1409" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <rect x="-9" y="24" width="18" height="5" rx="2" fill="#2B1409"/>
+        <g stroke="#EDEFF5" stroke-width="1.2" opacity=".8"><path d="M-2 -50 v70"/><path d="M2 -50 v70"/></g>
+      </g>
+      <path d="M32 196 L128 268" stroke="#E4D9BE" stroke-width="3" stroke-linecap="round"/>
+      <path d="M32 196 L128 268" stroke="${INK}" stroke-width="1" stroke-linecap="round" opacity=".35"/>`;
+    extra = `<g fill="${t.color}"><path d="M204 82 l3 7 l7 3 l-7 3 l-3 7 l-3 -7 l-7 -3 l7 -3 z" opacity=".9"/>
+      <path d="M52 128 l2.4 5.6 l5.6 2.4 l-5.6 2.4 l-2.4 5.6 l-2.4 -5.6 l-5.6 -2.4 l5.6 -2.4 z" opacity=".7"/>
+      <circle cx="222" cy="150" r="3" opacity=".6"/></g>`;
+  }
+
+  return `<svg viewBox="0 0 260 285" xmlns="http://www.w3.org/2000/svg">
+    <defs>${glow}</defs>
+    <circle cx="130" cy="140" r="104" fill="url(#g-${t.key})"/>
+    ${arcs}
+    ${extra}
+    ${body}${neck}${head}${hair}${blushG}${face}${gear}
+  </svg>`;
+}
+
+/* =========================================================
+   状态与流程
+   ========================================================= */
+const S = {i:0, ans:[], lock:false};
+const $ = id => document.getElementById(id);
+const screens = ['s-intro','s-quiz','s-load','s-res'];
+function go(id){
+  screens.forEach(s=>$(s).classList.toggle('on', s===id));
+  $(id).scrollTop = 0;
+}
+
+/* --- 首页调频刻度盘 --- */
+(function initDial(){
+  const g = $('ticks-svg'); let s='';
+  for(let i=0;i<=44;i++){
+    const x = (i/44)*396, big = i%4===0;
+    s += `<rect x="${x.toFixed(1)}" y="${big?58:63}" width="1" height="${big?13:8}" fill="${big?'#3D4A63':'#2A3448'}" opacity="${big?1:.7}"/>`;
+  }
+  g.innerHTML = s;
+  // 波形
+  const pts=[]; for(let i=0;i<=88;i++){const x=(i/88)*396;
+    const y=34 + Math.sin(i/6)*10 + Math.sin(i/2.3)*5 + Math.sin(i/13)*7;
+    pts.push(`${x.toFixed(1)},${y.toFixed(1)}`);}
+  $('wave-svg').setAttribute('d','M'+pts.join(' L'));
+  const nd = $('needle-svg');
+  let p=0;
+  setInterval(()=>{p+=0.9; const x=198+Math.sin(p/28)*150; nd.setAttribute('transform',`translate(${x.toFixed(1)},0)`);},40);
+})();
+
+/* --- 进度刻度 --- */
+$('p-ticks').innerHTML = Array.from({length:10},()=>'<i></i>').join('');
+
+/* --- 答题 --- */
+function renderQ(){
+  const q = QUESTIONS[S.i];
+  $('p-ch').textContent = 'CH.'+String(S.i+1).padStart(2,'0')+' / 10';
+  const pc = Math.round(S.i/10*100);
+  $('p-pc').textContent = pc+'%';
+  $('p-fill').style.width = pc+'%';
+  $('p-cur').style.left = pc+'%';
+  [...$('p-ticks').children].forEach((el,k)=>el.classList.toggle('done', k<S.i));
+  $('q-tag').textContent = 'SCENE '+String(S.i+1).padStart(2,'0');
+  $('q-text').textContent = q.q;
+  const box = $('opts'); box.innerHTML='';
+  q.a.forEach((o,k)=>{
+    const d = document.createElement('div');
+    d.className='opt'; d.style.animationDelay=(k*70)+'ms';
+    d.innerHTML = `<div class="key mono">${KEYS[k]}</div><div class="txt">${o.t}</div>`;
+    d.onclick = ()=>pick(k,d);
+    box.appendChild(d);
+  });
+}
+function pick(k,el){
+  if(S.lock) return; S.lock=true;
+  [...$('opts').children].forEach(o=>{ if(o!==el) o.classList.add('dim'); });
+  el.classList.add('sel');
+  S.ans.push(QUESTIONS[S.i].a[k].ty);
+  const pc = Math.round((S.i+1)/10*100);
+  $('p-fill').style.width = pc+'%';
+  $('p-cur').style.left = pc+'%';
+  $('p-pc').textContent = pc+'%';
+  [...$('p-ticks').children].forEach((e,j)=>e.classList.toggle('done', j<=S.i));
+  setTimeout(()=>{
+    S.i++;
+    if(S.i < QUESTIONS.length){ renderQ(); S.lock=false; }
+    else { analyse(); }
+  }, 380);
+}
+
+/* --- 分析动画 --- */
+const LOAD_TXT = ['校准频段…','解析你的节拍偏好…','比对五万份声音样本…','匹配你的声音基因…'];
+function analyse(){
+  go('s-load');
+  const bars = $('bars'); bars.innerHTML='';
+  for(let i=0;i<11;i++){
+    const b=document.createElement('i');
+    b.style.animationDelay=(i*70)+'ms';
+    b.style.animationDuration=(0.62+ (i%4)*0.11)+'s';
+    bars.appendChild(b);
+  }
+  let n=0, pct=0;
+  const t1 = setInterval(()=>{ $('load-t').textContent = LOAD_TXT[n++ % LOAD_TXT.length]; }, 520);
+  const t2 = setInterval(()=>{ pct += 4; $('load-pct').textContent = Math.min(pct,100)+'%'; }, 72);
+  setTimeout(()=>{ clearInterval(t1); clearInterval(t2); showResult(); }, 1850);
+}
+
+/* --- 结果 --- */
+function compute(){
+  const sc = [0,0,0,0,0];
+  S.ans.forEach(t=>sc[t]++);
+  const max = Math.max(...sc);
+  // 平局时取最先达到该分数的类型
+  const seen = [0,0,0,0,0]; let win = sc.indexOf(max);
+  for(const t of S.ans){ seen[t]++; if(seen[t]===max){ win=t; break; } }
+  return {sc, win};
+}
+function showResult(){
+  const {sc, win} = compute();
+  const t = TYPES[win];
+  document.documentElement.style.setProperty('--accent', t.color);
+  document.documentElement.style.setProperty('--glow', t.color+'55');
+  $('char-card').style.setProperty('--glow', t.color+'66');
+
+  // 编号：稳定且可复现
+  let seed = 0; S.ans.forEach((v,i)=>seed += (v+1)*(i+3)*7);
+  const num = 1000 + (seed*37 % 8999);
+  const id = t.en.split(' ')[0] + '-' + num;
+  $('r-id').textContent = id;
+  $('fp-id').textContent = 'HZ '+(120 + seed%360)+' / '+(S.ans.length*4)+' SAMPLES';
+
+  $('avatar').innerHTML = charSVG(t);
+  $('r-role').textContent = t.role;
+  $('r-quote').textContent = t.quote;
+  $('r-en').textContent = t.en;
+  $('r-cn').textContent = t.cn;
+  $('r-sub').textContent = t.sub;
+  $('r-desc').textContent = t.desc;
+
+  // 能力值：基础值 + 个性化微调
+  const bonus = (sc[win] - 5) * 1.6;
+  const stats = t.stats.map((v,i)=>{
+    const jitter = ((seed >> (i*2)) % 7) - 3;
+    return Math.max(42, Math.min(99, Math.round(v + bonus + jitter)));
+  });
+  $('stats').innerHTML = stats.map((v,i)=>`
+    <div class="stat">
+      <div class="stat-top"><div class="stat-n">${STAT_NAMES[i]}</div><div class="stat-v mono">${v}%</div></div>
+      <div class="stat-bar"><i data-w="${v}"></i></div>
+    </div>`).join('');
+
+  $('tags').innerHTML = t.tags.map((x,i)=>
+    `<span class="tag" style="animation-delay:${(300+i*80)}ms"># ${x}</span>`).join('');
+
+  // 声音指纹波形
+  let s = seed;
+  const rnd = ()=>{ s = (s*9301 + 49297) % 233280; return s/233280; };
+  let fpD = 'M0,32 ';
+  const N=68;
+  for(let i=0;i<=N;i++){
+    const x = (i/N)*340;
+    const h = (Math.sin(i/5 + seed%7)*0.5 + 0.5)*0.55 + rnd()*0.45;
+    fpD += `L${x.toFixed(1)},${(32 + (i%2?1:-1)*h*26).toFixed(1)} `;
+  }
+  $('fp-svg').innerHTML =
+    `<defs><linearGradient id="fpg" x1="0" y1="0" x2="340" y2="0">
+      <stop stop-color="${t.color}" stop-opacity=".25"/><stop offset=".5" stop-color="${t.color}"/><stop offset="1" stop-color="${t.color}" stop-opacity=".25"/></linearGradient></defs>
+     <path d="M0,32 L340,32" stroke="rgba(255,255,255,.08)" stroke-width="1"/>
+     <path id="fp-path" d="${fpD}" stroke="url(#fpg)" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
+
+  const d = new Date();
+  $('r-date').textContent = `检测于 ${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')} · NIGHT SIGNAL 实验室\n结果仅代表此刻的你`;
+
+  go('s-res');
+  requestAnimationFrame(()=>{
+    setTimeout(()=>{
+      document.querySelectorAll('.stat-bar i').forEach(el=>el.style.width = el.dataset.w+'%');
+    }, 260);
+    const p = $('fp-path');
+    if(p){ const L=p.getTotalLength(); p.style.strokeDasharray=L; p.style.strokeDashoffset=L;
+      p.style.transition='stroke-dashoffset 1.4s ease-out'; requestAnimationFrame(()=>p.style.strokeDashoffset=0); }
+  });
+}
+
+/* --- 分享 / 重测 --- */
+$('btn-share').onclick = ()=>{
+  const {win} = compute(); const t = TYPES[win];
+  const txt = `我的声音人格是【${t.cn} ${t.en}】— ${t.sub}。\n「${t.quote}」\n声音档案编号 ${$('r-id').textContent}\n来测测你的 → ${location.href}`;
+  const done = ()=>toast('档案已复制，去粘贴给朋友吧');
+  if(navigator.share){ navigator.share({title:'我的声音人格', text:txt}).catch(()=>{}); }
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(done, ()=>fallbackCopy(txt,done));
+  } else fallbackCopy(txt,done);
+};
+function fallbackCopy(txt,cb){
+  const ta=document.createElement('textarea'); ta.value=txt; ta.style.position='fixed'; ta.style.opacity='0';
+  document.body.appendChild(ta); ta.select();
+  try{ document.execCommand('copy'); cb(); }catch(e){ toast('复制失败，可截图分享'); }
+  document.body.removeChild(ta);
+}
+let tT;
+function toast(m){
+  const el=$('toast'); el.textContent=m; el.classList.add('on');
+  clearTimeout(tT); tT=setTimeout(()=>el.classList.remove('on'),2200);
+}
+$('btn-again').onclick = ()=>{
+  S.i=0; S.ans=[]; S.lock=false;
+  document.documentElement.style.setProperty('--accent','var(--amber)');
+  go('s-intro');
+};
+$('btn-start').onclick = ()=>{ S.i=0; S.ans=[]; S.lock=false; renderQ(); go('s-quiz'); };
+</script>
+</body>
+</html>
